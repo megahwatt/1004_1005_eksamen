@@ -22,7 +22,7 @@ async function getPokeData(pokeNames) {
 			const pokeType = pokeData.types[0].type.url;
 			const typeData = await (await fetch(pokeType)).json();
 			const type = typeData.name;
-			const sprite = await fetchSprite(pokeData.sprites.other["official-artwork"].front_default);
+			const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeID}.png`;
 			pokeArray.push({ pokeID, name, sprite, type });
 		}
 
@@ -30,19 +30,6 @@ async function getPokeData(pokeNames) {
 		return pokeArray;
 	} catch (error) {
 		console.error("Error fetching Pokémon data:", error);
-	}
-}
-
-async function fetchSprite(url) {
-	try {
-		const response = await fetch(url);
-		if (!response.ok) {
-			throw new Error("Sprite not found");
-		}
-		return url;
-	} catch (error) {
-		console.error("Error fetching sprite:", error);
-		return null;
 	}
 }
 
