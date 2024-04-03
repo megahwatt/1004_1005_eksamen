@@ -3,40 +3,55 @@ let pokeArray = [];
 async function catchKantoPokemons() {
 	try {
 		const generationOne = await (await fetch("https://pokeapi.co/api/v2/generation/1")).json();
-		const pokeData = generationOne.pokemon_species.map((pokemon) => pokemon.name, pokemon.id, pokemon.sprite);
+		const pokeSpecies = generationOne.pokemon_species;
 
-		for (const species of pokeData) {
-			const pokemonData = await (await fetch(species.url)).json();
-			const spriteUrl = pokemonData.sprites.front_default;
-			pokeArray.push({ name: species.name, sprite: spriteUrl });
-		}
+		const pokeNames = pokeSpecies.map((pokemon) => pokemon.name);
 
-		console.log("Gotcha! Generation One was caught!", generationOne);
-		return pokeData;
+		console.log("Gotcha! Generation One was caught!");
+		return pokeNames;
 	} catch (error) {
 		console.error("Oh no, the Pokémon broke free!", error);
 	}
 }
 
-async function getPokeTypes(pokeData) {
+async function getPokeData(pokeNames) {
 	try {
-		for (const name of pokeData) {
-			const pokeTypeRequest = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
-			const type = pokeTypeRequest.types[0].type.name;
-			pokeArray.push({ name: name, type: type });
+		for (const name of pokeNames) {
+			const pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
+			const pokeID = pokeData.id;
+			const pokeType = pokeData.types[0].type.url;
+			const typeData = await (await fetch(pokeType)).json();
+			const type = typeData.name;
+			const sprite = await fetchSprite(pokeData.sprites.other["official-artwork"].front_default);
+			pokeArray.push({ pokeID, name, sprite, type });
 		}
+
+		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		return pokeArray;
 	} catch (error) {
-		console.error("Error fetching Pokémon types:", error);
+		console.error("Error fetching Pokémon data:", error);
 	}
 }
 
-catchKantoPokemons().then((pokeData) => {
-	getPokeTypes(pokeData)
+async function fetchSprite(url) {
+	try {
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error("Sprite not found");
+		}
+		return url;
+	} catch (error) {
+		console.error("Error fetching sprite:", error);
+		return null;
+	}
+}
+
+catchKantoPokemons().then((pokeNames) => {
+	getPokeData(pokeNames)
 		.then((result) => {
-			console.log("Pokémon Types:", result);
+			console.log("Pokémon Data:", result);
 		})
 		.catch((error) => {
-			console.error("Error getting Pokémon types:", error);
+			console.error("Error getting Pokémon data:", error);
 		});
 });
