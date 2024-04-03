@@ -3,30 +3,36 @@ let pokeArray = [];
 async function catchKantoPokemons() {
 	try {
 		const generationOne = await (await fetch("https://pokeapi.co/api/v2/generation/1")).json();
-		const pokeNames = generationOne.pokemon_species.map((pokemon) => pokemon.name);
+		const pokeData = generationOne.pokemon_species.map((pokemon) => pokemon.name, pokemon.id, pokemon.sprite);
+
+		for (const species of pokeData) {
+			const pokemonData = await (await fetch(species.url)).json();
+			const spriteUrl = pokemonData.sprites.front_default;
+			pokeArray.push({ name: species.name, sprite: spriteUrl });
+		}
+
 		console.log("Gotcha! Generation One was caught!", generationOne);
-		return pokeNames;
+		return pokeData;
 	} catch (error) {
 		console.error("Oh no, the Pokémon broke free!", error);
 	}
 }
 
-async function getPokeTypes(pokeNames) {
+async function getPokeTypes(pokeData) {
 	try {
-		let pokeTypes = [];
-		for (const name of pokeNames) {
+		for (const name of pokeData) {
 			const pokeTypeRequest = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
 			const type = pokeTypeRequest.types[0].type.name;
-			pokeTypes.push({ name: name, type: type });
+			pokeArray.push({ name: name, type: type });
 		}
-		return pokeTypes;
+		return pokeArray;
 	} catch (error) {
 		console.error("Error fetching Pokémon types:", error);
 	}
 }
 
-catchKantoPokemons().then((pokeNames) => {
-	getPokeTypes(pokeNames)
+catchKantoPokemons().then((pokeData) => {
+	getPokeTypes(pokeData)
 		.then((result) => {
 			console.log("Pokémon Types:", result);
 		})
