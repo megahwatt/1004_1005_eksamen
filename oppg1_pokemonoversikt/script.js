@@ -1,7 +1,7 @@
 // Global variables
 
 let pokeArray = [];
-const pokeNames = [];
+let pokeNames = [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -18,16 +18,27 @@ async function gottaCatchEmAll() {
 			(await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
 		]);
 
+		/*
 		console.log("genI", dataGenI);
 		console.log("genII", dataGenII);
 		console.log("genIII", dataGenIII);
 		console.log("genIV", dataGenIV);
+		*/
 
 		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
 			data.pokemon_species.forEach((pokemon) => {
 				pokeNames.push(pokemon.name);
 			});
 		});
+
+		/*
+		Utilizing the Fisher-Yates shuffle algorithm to scramble the Pokémon-generations,
+		so we get a true random selection upon page load instead of Gen I's 1-49.
+		*/
+		for (let i = pokeNames.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[pokeNames[i], pokeNames[j]] = [pokeNames[j], pokeNames[i]];
+		}
 
 		console.log("Gotcha! First four generations were caught!");
 		return pokeNames;
@@ -55,7 +66,7 @@ async function getPokeData(pokeNames) {
 			pokeArray.push({ sprite, name, type, pokeID });
 		}
 
-		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
+		//pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		createMasterballs();
 	} catch (error) {
 		console.error("getPokeData 404", error);
@@ -99,7 +110,9 @@ function createEditBtn(index) {
 
 // Create pokémon-cards
 function createMasterballs() {
-	pokeArray.forEach((pokemon, index) => {
+	const maxFifty = pokeArray.slice(0, 50);
+
+	maxFifty.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 
