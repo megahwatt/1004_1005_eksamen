@@ -90,17 +90,16 @@ function createSaveBtn(index) {
 
 function savePoke(pokemon) {
 	let savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
-	const maxPokes = 5;
 
-	if (savedPokes.length < maxPokes) {
+	if (savedPokes.length < 5) {
 		savedPokes.push(pokemon);
 		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-		savedPokes.push(pokemon);
 		console.log(`Gotcha! ${pokemon.name} was caught!`);
 	} else {
 		console.log("Oh no, you can only carry five Pokémon at a time! Realse one into the wild to catch another.");
 	}
 }
+savePoke();
 
 // Buttons
 function createDeleteBtn(index) {
