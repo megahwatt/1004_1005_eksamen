@@ -40,11 +40,17 @@ async function gottaCatchEmAll() {
 		console.error("Oh no, the Pokémons broke free!", error);
 	}
 }
-gottaCatchEmAll();
 
 async function getPokeData(pokeNames) {
 	try {
 		for (const name of pokeNames) {
+			if (name.split("-").length > 1) {
+				continue;
+			}
+			if (name === "deoxys") {
+				continue;
+			}
+
 			const pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
 			const pokeID = pokeData.id;
 			const pokeType = pokeData.types[0].type.url;
@@ -70,3 +76,44 @@ gottaCatchEmAll().then((pokeNames) => {
 			console.error("call gottaCatchEmAll 404", error);
 		});
 });
+
+//kladd under
+/*
+async function getPokeData(pokeNames) {
+	try {
+		for (const name of pokeNames) {
+			// Skip processing if the name has more than one component
+			if (name.split("-").length > 1) {
+				continue;
+			}
+
+			let pokeData, pokeID, pokeType;
+			pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
+
+			pokeID = pokeData.id;
+			pokeType = pokeData.types[0].type.url;
+
+			// Fetch type data
+			const typeData = await (await fetch(pokeType)).json();
+			const type = typeData.name;
+			const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeID}.png`;
+			pokeArray.push({ sprite, name, type, pokeID });
+		}
+
+		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
+		createMasterballs();
+	} catch (error) {
+		console.error("getPokeData 404", error);
+	}
+}
+
+gottaCatchEmAll().then((pokeNames) => {
+	getPokeData(pokeNames)
+		.then((result) => {
+			console.log("pokeData", result);
+		})
+		.catch((error) => {
+			console.error("call gottaCatchEmAll 404", error);
+		});
+});
+*/
