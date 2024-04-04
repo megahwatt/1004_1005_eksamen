@@ -1,4 +1,9 @@
 // Fetch API and data about each pokémon in Gen I, II, III and IV
+/*
+Very manual error-handling of the Pokémons that could not be fetched,
+due to issues with the throw error function.
+Proritised the exam as a whole over elegant error handling.
+*/
 
 let pokeArray = [];
 

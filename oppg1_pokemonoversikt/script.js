@@ -1,24 +1,51 @@
 // Global variables
 let pokeArray = [];
+
+// Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
-// Fetch API and data about each pokémon in gen one
-async function catchKantoPokemons() {
+Very manual error-handling of the Pokémons that could not be fetched,
+due to issues with the throw error function.
+Proritised the exam as a whole over elegant error handling.
+*/
+async function gottaCatchEmAll() {
 	try {
-		const generationOne = await (await fetch("https://pokeapi.co/api/v2/generation/1")).json();
-		const pokeSpecies = generationOne.pokemon_species;
+		const pokeNames = [];
 
-		const pokeNames = pokeSpecies.map((pokemon) => pokemon.name);
+		const [dataGenI, dataGenII, dataGenIII, dataGenIV] = await Promise.all([
+			(await fetch("https://pokeapi.co/api/v2/generation/1")).json(),
+			(await fetch("https://pokeapi.co/api/v2/generation/2")).json(),
+			(await fetch("https://pokeapi.co/api/v2/generation/3")).json(),
+			(await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
+		]);
 
-		console.log("Gotcha! Generation One was caught!");
+		console.log("genI", dataGenI);
+		console.log("genII", dataGenII);
+		console.log("genIII", dataGenIII);
+		console.log("genIV", dataGenIV);
+
+		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
+			data.pokemon_species.forEach((pokemon) => {
+				pokeNames.push(pokemon.name);
+			});
+		});
+
+		console.log("Gotcha! First four generations were caught!");
 		return pokeNames;
 	} catch (error) {
-		console.error("Oh no, the Pokémon broke free!", error);
+		console.error("Oh no, the Pokémons broke free!", error);
 	}
 }
 
 async function getPokeData(pokeNames) {
 	try {
 		for (const name of pokeNames) {
+			if (name.split("-").length > 1) {
+				continue;
+			}
+			if (name === "deoxys" || name === "giratina" || name === "wormadam" || name === "shaymin") {
+				continue;
+			}
+
 			const pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
 			const pokeID = pokeData.id;
 			const pokeType = pokeData.types[0].type.url;
@@ -31,20 +58,20 @@ async function getPokeData(pokeNames) {
 		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		createMasterballs();
 	} catch (error) {
-		console.error("getopkedata 404", error);
+		console.error("getPokeData 404", error);
 	}
 }
 
-catchKantoPokemons().then((pokeNames) => {
+gottaCatchEmAll().then((pokeNames) => {
 	getPokeData(pokeNames)
 		.then((result) => {
-			console.log("pokedata", result);
+			console.log("getPokeData result", result);
 		})
 		.catch((error) => {
-			console.error("call catchkantopokemons 404", error);
+			console.error("call gottaCatchEmAll 404", error);
 		});
 });
-*/
+
 // Create pokémon-cards
 function createMasterballs() {
 	const masterball = document.createElement("div");
