@@ -1,4 +1,5 @@
 // Global variables
+
 let pokeArray = [];
 const pokeNames = [];
 
