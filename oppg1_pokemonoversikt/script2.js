@@ -14,6 +14,14 @@ async function gottaCatchEmAll() {
 		console.log("genIII", dataGenIII);
 		console.log("genIV", dataGenIV);
 
+		const pokeNames = [];
+
+		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
+			data.pokemon_species.forEach((pokemon) => {
+				pokeNames.push(pokemon.name);
+			});
+		});
+
 		/*
         const pokeSpecies = caughtEmAll.pokemon_species;
 
@@ -24,6 +32,7 @@ async function gottaCatchEmAll() {
 */
 
 		console.log("Gotcha! First four generations were caught!");
+		console.log("pokenames", pokeNames);
 		return pokeNames;
 	} catch (error) {
 		console.error("Oh no, the Pokémons broke free!", error);
