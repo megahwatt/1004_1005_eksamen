@@ -138,8 +138,21 @@ function createMasterballs() {
 }
 
 // Filter
-function createFilterFunction() {}
+const filterList = document.querySelector(".filter-list");
+
+const filterBtns = document.querySelectorAll(".filter");
+
+filterBtns.forEach((img) => {
+	img.addEventListener("click", filterByType);
+});
+
+function filterByType() {
+	selectedType = event.target.getAttribute("data-type");
+	console.log("type", selectedType);
+}
 /*
+
+
 0 all
 
 1 normal
