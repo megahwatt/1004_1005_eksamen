@@ -74,10 +74,10 @@ gottaCatchEmAll().then((pokeNames) => {
 
 // Create pokémon-cards
 function createMasterballs() {
-	const masterball = document.createElement("div");
-	masterball.classList.add("masterball");
-
 	pokeArray.forEach((pokemon) => {
+		const masterball = document.createElement("div");
+		masterball.classList.add("masterball");
+
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
 
@@ -99,7 +99,7 @@ function createMasterballs() {
 		pokecard.appendChild(type);
 
 		masterball.appendChild(pokecard);
-	});
 
-	document.body.appendChild(masterball);
+		document.body.appendChild(masterball);
+	});
 }
