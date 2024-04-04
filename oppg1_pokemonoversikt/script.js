@@ -1,6 +1,6 @@
 // Global variables
 let pokeArray = [];
-
+/*
 // Fetch API and data about each pokémon in gen one
 async function catchKantoPokemons() {
 	try {
@@ -15,7 +15,7 @@ async function catchKantoPokemons() {
 		console.error("Oh no, the Pokémon broke free!", error);
 	}
 }
-
+*/
 async function getPokeData(pokeNames) {
 	try {
 		for (const name of pokeNames) {
