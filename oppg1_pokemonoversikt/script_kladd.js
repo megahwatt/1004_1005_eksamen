@@ -1,12 +1,12 @@
-// Global variables
-let pokeArray = [];
-
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
 Very manual error-handling of the Pokémons that could not be fetched,
 due to issues with the throw error function.
 Proritised the exam as a whole over elegant error handling.
 */
+
+let pokeArray = [];
+
 async function gottaCatchEmAll() {
 	try {
 		const pokeNames = [];
@@ -65,41 +65,9 @@ async function getPokeData(pokeNames) {
 gottaCatchEmAll().then((pokeNames) => {
 	getPokeData(pokeNames)
 		.then((result) => {
-			console.log("getPokeData result", result);
+			console.log("pokeData", result);
 		})
 		.catch((error) => {
 			console.error("call gottaCatchEmAll 404", error);
 		});
 });
-
-// Create pokémon-cards
-function createMasterballs() {
-	const masterball = document.createElement("div");
-	masterball.classList.add("masterball");
-
-	pokeArray.forEach((pokemon) => {
-		const pokecard = document.createElement("div");
-		pokecard.classList.add("pokecard");
-
-		const sprite = document.createElement("img");
-		sprite.classList.add("sprite");
-		sprite.src = pokemon.sprite;
-		sprite.alt = `The official artwork of ${pokemon.name}`;
-
-		const name = document.createElement("div");
-		name.classList.add("name");
-		name.textContent = pokemon.name;
-
-		const type = document.createElement("div");
-		type.classList.add("type");
-		type.textContent = pokemon.type;
-
-		pokecard.appendChild(sprite);
-		pokecard.appendChild(name);
-		pokecard.appendChild(type);
-
-		masterball.appendChild(pokecard);
-	});
-
-	document.body.appendChild(masterball);
-}
