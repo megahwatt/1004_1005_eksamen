@@ -13,10 +13,10 @@ async function gottaCatchEmAll() {
 			(await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
 		]);
 
-		/*console.log("genI", dataGenI);
+		console.log("genI", dataGenI);
 		console.log("genII", dataGenII);
 		console.log("genIII", dataGenIII);
-		console.log("genIV", dataGenIV);*/
+		console.log("genIV", dataGenIV);
 
 		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
 			data.pokemon_species.forEach((pokemon) => {
@@ -24,17 +24,7 @@ async function gottaCatchEmAll() {
 			});
 		});
 
-		/*
-        const pokeSpecies = caughtEmAll.pokemon_species;
-
-        const pokeNames = pokeSpecies.map((pokemon) => pokemon.name);
-
-		const generationOne = await (await fetch("https://pokeapi.co/api/v2/generation/1")).json();
-		const pokeSpecies = generationOne.pokemon_species;
-*/
-
 		console.log("Gotcha! First four generations were caught!");
-		//console.log("pokenames", pokeNames);
 		return pokeNames;
 	} catch (error) {
 		console.error("Oh no, the Pokémons broke free!", error);
@@ -47,7 +37,7 @@ async function getPokeData(pokeNames) {
 			if (name.split("-").length > 1) {
 				continue;
 			}
-			if (name === "deoxys") {
+			if (name === "deoxys" || name === "giratina" || name === "wormadam" || name === "shaymin") {
 				continue;
 			}
 
@@ -76,44 +66,3 @@ gottaCatchEmAll().then((pokeNames) => {
 			console.error("call gottaCatchEmAll 404", error);
 		});
 });
-
-//kladd under
-/*
-async function getPokeData(pokeNames) {
-	try {
-		for (const name of pokeNames) {
-			// Skip processing if the name has more than one component
-			if (name.split("-").length > 1) {
-				continue;
-			}
-
-			let pokeData, pokeID, pokeType;
-			pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
-
-			pokeID = pokeData.id;
-			pokeType = pokeData.types[0].type.url;
-
-			// Fetch type data
-			const typeData = await (await fetch(pokeType)).json();
-			const type = typeData.name;
-			const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeID}.png`;
-			pokeArray.push({ sprite, name, type, pokeID });
-		}
-
-		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
-		createMasterballs();
-	} catch (error) {
-		console.error("getPokeData 404", error);
-	}
-}
-
-gottaCatchEmAll().then((pokeNames) => {
-	getPokeData(pokeNames)
-		.then((result) => {
-			console.log("pokeData", result);
-		})
-		.catch((error) => {
-			console.error("call gottaCatchEmAll 404", error);
-		});
-});
-*/
