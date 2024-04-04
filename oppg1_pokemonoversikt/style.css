@@ -33,10 +33,13 @@ body {
 }
 
 .btn-container {
+	display: flex;
 }
-.save-btn {
-}
-.delete-btn {
-}
+
+.save-btn,
+.delete-btn,
 .edit-btn {
+	background-color: white;
+	width: 100px;
+	height: 100px;
 }
