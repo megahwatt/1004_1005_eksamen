@@ -15,7 +15,7 @@ async function catchKantoPokemons() {
 		console.error("Oh no, the Pokémon broke free!", error);
 	}
 }
-*/
+
 async function getPokeData(pokeNames) {
 	try {
 		for (const name of pokeNames) {
@@ -44,7 +44,7 @@ catchKantoPokemons().then((pokeNames) => {
 			console.error("call catchkantopokemons 404", error);
 		});
 });
-
+*/
 // Create pokémon-cards
 function createMasterballs() {
 	const masterball = document.createElement("div");
