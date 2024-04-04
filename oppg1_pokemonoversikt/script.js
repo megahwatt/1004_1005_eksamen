@@ -1,6 +1,7 @@
 // Global variables
 
 let pokeArray = [];
+let savedPokes = [];
 const pokeNames = [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
@@ -72,18 +73,40 @@ gottaCatchEmAll().then((pokeNames) => {
 		});
 });
 
-// Buttons
+// SAVE
 function createSaveBtn(index) {
 	const saveBtn = document.createElement("button");
 	saveBtn.classList.add("save-btn");
+	saveBtn.dataset.index = index;
 	saveBtn.innerHTML = `SAVE`;
+
+	saveBtn.addEventListener("click", () => {
+		const throwPokeball = savedPokes[index];
+		savePoke(throwPokeball);
+	});
 
 	return saveBtn;
 }
 
+function savePoke(pokemon) {
+	let savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
+	const maxPokes = 5;
+
+	if (savedPokes.length < maxPokes) {
+		savedPokes.push(pokemon);
+		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+		savedPokes.push(pokemon);
+		console.log(`Gotcha! ${pokemon.name} was caught!`);
+	} else {
+		console.log("Oh no, you can only carry five Pokémon at a time! Realse one into the wild to catch another.");
+	}
+}
+
+// Buttons
 function createDeleteBtn(index) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
+	deleteBtn.dataset.index = index;
 	deleteBtn.innerHTML = `DELETE`;
 
 	return deleteBtn;
@@ -92,12 +115,13 @@ function createDeleteBtn(index) {
 function createEditBtn(index) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
+	editBtn.dataset.index = index;
 	editBtn.innerHTML = `EDIT`;
 
 	return editBtn;
 }
 
-// Create pokémon-cards
+// Create Pokémon-cards
 function createMasterballs() {
 	pokeArray.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
