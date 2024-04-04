@@ -1,11 +1,49 @@
+/*
+Style to help identify the elements during the developing stages.
+*/
+
 *,
 html,
 body {
-	height: 100%;
 	margin: 0;
 	padding: 0;
 	font-size: 6.25%;
 	scroll-behavior: smooth;
+}
+
+.filter-container {
+	margin: 25px auto auto auto;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	flex-flow: row wrap;
+	align-content: flex-start;
+	width: 700px;
+}
+
+.filter-list {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: center;
+	padding: 5px;
+	box-sizing: border-box;
+	flex: 1;
+}
+
+.filter:not(.zero) {
+	width: 100px;
+	height: auto;
+	margin: 10px 10px 0px 0px;
+}
+
+.zero {
+	max-width: 90px;
+	max-height: 90px;
+	margin: 25px auto auto auto;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: center;
 }
 
 .masterball {
@@ -33,10 +71,13 @@ body {
 }
 
 .btn-container {
+	display: flex;
 }
-.save-btn {
-}
-.delete-btn {
-}
+
+.save-btn,
+.delete-btn,
 .edit-btn {
+	background-color: white;
+	width: 100px;
+	height: 100px;
 }

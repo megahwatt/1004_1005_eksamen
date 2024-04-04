@@ -1,5 +1,7 @@
 // Global variables
+
 let pokeArray = [];
+const pokeNames = [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -9,8 +11,6 @@ Proritised the exam as a whole over elegant error handling.
 */
 async function gottaCatchEmAll() {
 	try {
-		const pokeNames = [];
-
 		const [dataGenI, dataGenII, dataGenIII, dataGenIV] = await Promise.all([
 			(await fetch("https://pokeapi.co/api/v2/generation/1")).json(),
 			(await fetch("https://pokeapi.co/api/v2/generation/2")).json(),
@@ -72,9 +72,34 @@ gottaCatchEmAll().then((pokeNames) => {
 		});
 });
 
+// Buttons
+function createSaveBtn(index) {
+	const saveBtn = document.createElement("button");
+	saveBtn.classList.add("save-btn");
+	saveBtn.innerHTML = `SAVE`;
+
+	return saveBtn;
+}
+
+function createDeleteBtn(index) {
+	const deleteBtn = document.createElement("button");
+	deleteBtn.classList.add("delete-btn");
+	deleteBtn.innerHTML = `DELETE`;
+
+	return deleteBtn;
+}
+
+function createEditBtn(index) {
+	const editBtn = document.createElement("button");
+	editBtn.classList.add("edit-btn");
+	editBtn.innerHTML = `EDIT`;
+
+	return editBtn;
+}
+
 // Create pokémon-cards
 function createMasterballs() {
-	pokeArray.forEach((pokemon) => {
+	pokeArray.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 
@@ -94,12 +119,45 @@ function createMasterballs() {
 		type.classList.add("type");
 		type.textContent = pokemon.type;
 
-		pokecard.appendChild(sprite);
-		pokecard.appendChild(name);
-		pokecard.appendChild(type);
+		const btnContainer = document.createElement("div");
+		btnContainer.classList.add("btn-container");
 
-		masterball.appendChild(pokecard);
+		const saveBtn = createSaveBtn(index);
 
-		document.body.appendChild(masterball);
+		const deleteBtn = createDeleteBtn(index);
+
+		const editBtn = createEditBtn(index);
+
+		pokecard.append(sprite, name, type);
+		btnContainer.append(saveBtn, deleteBtn, editBtn);
+
+		masterball.append(pokecard, btnContainer);
+
+		document.body.append(masterball);
 	});
 }
+
+// Filter
+function createFilterFunction() {}
+/*
+0 all
+
+1 normal
+2 fighting
+3 flying
+4 poison
+5 ground
+6 rock
+7 bug
+8 ghost
+9 steel
+10 fire
+11 water
+12 grass
+13 electric
+14 psychic
+15 ice
+16 dragon
+17 dark
+18 fairy
+*/
