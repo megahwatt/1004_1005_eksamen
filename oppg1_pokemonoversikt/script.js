@@ -102,6 +102,7 @@ function createMasterballs() {
 	pokeArray.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
+		masterball.dataset.type = pokemon.type;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -113,11 +114,11 @@ function createMasterballs() {
 
 		const name = document.createElement("div");
 		name.classList.add("name");
-		name.textContent = pokemon.name;
+		name.innerHTML = pokemon.name;
 
 		const type = document.createElement("div");
 		type.classList.add("type");
-		type.textContent = pokemon.type;
+		type.innerHTML = pokemon.type;
 
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
@@ -143,6 +144,8 @@ const filterList = document.querySelector(".filter-list");
 const filterBtns = document.querySelectorAll(".filter");
 
 filterBtns.forEach((img) => {
+	const filterBtn = img.getAttribute("data-type");
+	img.dataset.type = filterBtn;
 	img.addEventListener("click", filterByType);
 });
 
