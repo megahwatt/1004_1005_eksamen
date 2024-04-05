@@ -3,6 +3,7 @@ let pokeArray = [];
 const pokeNames = [];
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
+let savedPokes = [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -81,18 +82,10 @@ gottaCatchEmAll().then((pokeNames) => {
 });
 
 // Buttons
-function createSaveBtn(index) {
-	const saveBtn = document.createElement("button");
-	saveBtn.classList.add("save-btn");
-	saveBtn.innerHTML = `SAVE`;
-
-	return saveBtn;
-}
-
 function createDeleteBtn(index) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
-	deleteBtn.innerHTML = `DELETE`;
+	deleteBtn.innerHTML = "DELETE";
 
 	return deleteBtn;
 }
@@ -100,7 +93,7 @@ function createDeleteBtn(index) {
 function createEditBtn(index) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
-	editBtn.innerHTML = `EDIT`;
+	editBtn.innerHTML = "EDIT";
 
 	return editBtn;
 }
@@ -211,6 +204,103 @@ function filterClick(event) {
 		filterByType(selectedType);
 	}
 }
+
+// Save Pokémons to array and local storage
+const caughtPokes = document.querySelector(".caught-pokes");
+
+function createSaveBtn(index) {
+	const saveBtn = document.createElement("button");
+	saveBtn.classList.add("save-btn");
+	saveBtn.innerHTML = "SAVE";
+
+	saveBtn.addEventListener("click", function () {
+		catchPokemon(index);
+		updateSavedPokemons(index);
+	});
+
+	return saveBtn;
+}
+
+function tooManySaved() {
+	const alertBubble = document.createElement("div");
+	alertBubble.classList.add("alert-bubble");
+	alertBubble.innerHTML = `<p>OH NO!<br/>You can only carry 5 Pokémons!</p>`;
+	document.body.append(alertBubble);
+
+	setTimeout(() => {
+		document.body.removeChild(alertBubble);
+	}, 5000);
+}
+
+function catchPokemon(index) {
+	const selectedPokemon = pokeArray[index];
+
+	const alreadyCaughtThis = savedPokes.some((pokemon) => pokemon.name === selectedPokemon.name);
+
+	if (!alreadyCaughtThis) {
+		if (savedPokes.length < 5) {
+			savedPokes.push(selectedPokemon);
+			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+
+			const cloakMasterball = masterballs[index];
+			if (cloakMasterball) {
+				cloakMasterball.classList.add("hide");
+			}
+		} else {
+			tooManySaved();
+			console.log("Oh no! You can only carry 5 Pokémons!");
+		}
+	} else {
+		console.log("This Pokémon has already been caught!");
+	}
+}
+
+function updateSavedPokemons(index) {
+	caughtPokes.innerHTML = "";
+	const savedPokeList = JSON.parse(localStorage.getItem("savedPokes")) || [];
+
+	savedPokeList.forEach((pokemon) => {
+		const masterball = document.createElement("div");
+		masterball.classList.add("masterball");
+		masterball.dataset.typeId = pokemon.pokeTypeID;
+
+		const pokecard = document.createElement("div");
+		pokecard.classList.add("pokecard");
+
+		const sprite = document.createElement("img");
+		sprite.classList.add("sprite");
+		sprite.src = pokemon.sprite;
+		sprite.alt = `The official artwork of ${pokemon.name}`;
+		sprite.style.backgroundColor = typeColours[pokemon.pokeTypeID].dark;
+
+		const name = document.createElement("div");
+		name.classList.add("name");
+		name.innerHTML = pokemon.name;
+
+		const typeName = document.createElement("div");
+		typeName.classList.add("type-name");
+		typeName.innerHTML = pokemon.type;
+
+		const id = document.createElement("div");
+		id.classList.add("id");
+		id.innerHTML = `#${pokemon.pokeID}`;
+
+		const btnContainer = document.createElement("div");
+		btnContainer.classList.add("btn-container");
+
+		const deleteBtn = createDeleteBtn(index);
+		deleteBtn.style.backgroundColor = typeColours[pokemon.pokeTypeID].light;
+
+		const editBtn = createEditBtn(index);
+		editBtn.style.backgroundColor = typeColours[pokemon.pokeTypeID].light;
+
+		pokecard.append(sprite, name, typeName, id);
+		btnContainer.append(deleteBtn, editBtn);
+
+		masterball.append(pokecard, btnContainer);
+
+		caughtPokes.append(masterball);
+	});
 
 /*
 0 all
