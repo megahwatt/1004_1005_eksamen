@@ -309,12 +309,18 @@ function createDeleteBtn(index) {
 }
 
 function releasePokemon(index) {
-	const deletedPokemon = savedPokes.splice(index, 1)[0];
+	const deletedPokemon = pokeArray.splice(index, 1)[0];
 
-	const sellMasterball = caughtPokes.querySelectorAll(".masterball")[index];
-	caughtPokes.removeChild(sellMasterball);
+	// Remove the Pokémon from savedPokes
+	const savedPokesIndex = savedPokes.findIndex((pokemon) => pokemon.name === deletedPokemon.name);
+	if (savedPokesIndex !== -1) {
+		savedPokes.splice(savedPokesIndex, 1);
+	}
 
 	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 
-	console.log(`${deletedPokemon.name} was released into the wild! Bye bye. `);
+	const sellMasterball = masterballs[index];
+	sellMasterball.parentNode.removeChild(sellMasterball);
+
+	console.log(`${deletedPokemon.name} was released into the wild! Bye bye.`);
 }
