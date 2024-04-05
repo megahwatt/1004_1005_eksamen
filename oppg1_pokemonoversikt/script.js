@@ -2,6 +2,7 @@
 let pokeArray = [];
 const pokeNames = [];
 let selectedType = "";
+const activeFilter = selectedType !== "";
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
 
@@ -119,7 +120,7 @@ function createMasterballs() {
 	maxFifty.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
-		masterball.dataset.typeId = pokemon.pokeTypeID;
+		masterball.dataset.typeId = pokemon.typeID;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -133,9 +134,9 @@ function createMasterballs() {
 		name.classList.add("name");
 		name.innerHTML = pokemon.name;
 
-		const type = document.createElement("div");
-		type.classList.add("type");
-		type.innerHTML = pokemon.type;
+		const typeName = document.createElement("div");
+		typeName.classList.add("typeName");
+		typeName.innerHTML = pokemon.typeName;
 
 		const id = document.createElement("div");
 		id.classList.add("id");
@@ -148,7 +149,7 @@ function createMasterballs() {
 		const deleteBtn = createDeleteBtn(index);
 		const editBtn = createEditBtn(index);
 
-		pokecard.append(sprite, name, type, id);
+		pokecard.append(sprite, name, typeName, id);
 		btnContainer.append(saveBtn, deleteBtn, editBtn);
 
 		masterball.append(pokecard, btnContainer);
@@ -159,32 +160,7 @@ function createMasterballs() {
 	filterByType("");
 }
 
-// Filter
-function refreshPokes() {
-	window.location.reload();
-}
-
-filterBtns.forEach((img) => {
-	img.addEventListener("click", filterClick);
-});
-
-function filterByType(selectedType) {
-	masterballs.forEach((masterball) => {
-		const type = masterball.dataset.typeId;
-		masterball.style.display = selectedType === "" || type === selectedType ? "block" : "none";
-	});
-}
-
-function filterClick(event) {
-	selectedType = event.currentTarget.getAttribute("data-type");
-	if (selectedType === "") {
-		refreshPokes();
-	} else {
-		filterByType(selectedType);
-	}
-}
-
-// Filter styling by type
+// Filter and styling by typeName
 const typeColours = {
 	normal: { light: "#d0d1d0", dark: "#9c9d9a" },
 	fighting: { light: "#ffc53a", dark: "#fa7d00" },
@@ -205,6 +181,43 @@ const typeColours = {
 	dark: { light: "#8f7c7e", dark: "#503e3c" },
 	fairy: { light: "#f7a9f7", dark: "#ec6de6" },
 };
+
+function assignColours(typeName) {
+	return typeColors[typeName] || { light: "#ffffff", dark: "#ffffff" };
+}
+
+function refreshPokes() {
+	window.location.reload();
+}
+
+filterBtns.forEach((img) => {
+	img.addEventListener("click", filterClick);
+});
+
+function filterByType(selectedType) {
+	masterballs.forEach((masterball) => {
+		const typeID = masterball.dataset.typeId;
+		const colors = typeColours[typeID];
+
+		masterball.querySelector(".sprite").style.backgroundColor = colors.dark;
+
+		const buttons = masterball.querySelectorAll(".btn-container button");
+		buttons.forEach((button) => {
+			button.style.backgroundColor = colors.light;
+		});
+
+		masterball.style.display = selectedType === "" || typeName === selectedType ? "block" : "none";
+	});
+}
+
+function filterClick(event) {
+	selectedType = event.currentTarget.getAttribute("data-typeName");
+	if (selectedType === "") {
+		refreshPokes();
+	} else {
+		filterByType(selectedType);
+	}
+}
 
 /*
 0 all
