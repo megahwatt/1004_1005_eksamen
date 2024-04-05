@@ -145,12 +145,10 @@ function createMasterballs() {
 		document.body.append(masterball);
 	});
 	masterballs = document.querySelectorAll(".masterball");
-
-	// Reapply filter after masterballs creation
 	filterByType();
 }
 
-// Filter
+// Filter -- the below function has an error code -- debug later
 filterBtns.forEach((img) => {
 	const filterBtn = img.getAttribute("data-type");
 	img.dataset.type = filterBtn;
