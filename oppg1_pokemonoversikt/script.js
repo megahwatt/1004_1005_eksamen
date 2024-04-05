@@ -3,7 +3,7 @@ let pokeArray = [];
 const pokeNames = [];
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
-let savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
+let savedPokes = [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -215,30 +215,65 @@ function createSaveBtn(index) {
 
 	saveBtn.addEventListener("click", function () {
 		catchPokemon(index);
-		updatePokePocket();
+		updateSavedPokemons();
 	});
 
 	return saveBtn;
 }
 
+function updateSavedPokemons() {
+if (savedPokes.length <= 5) {
+	catchPokemon(index);
+	updateSavedPokemonsList();
+} else {
+	console.log("Oh no! You can only carry 5 Pokémons!")
+}
+}
+
+function catchPokemon(index)
+//saves the pokemon you just clicked on ("saveBtn")/SAVE
+//pushes to array, UI / caught-pokes, local storage
+
+function updateSavedPokemonList
+//caughtPokes.innerHTML = "";
+//let savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
+//creates new copy of the pokemon
 /*
-function catchPokemon(index) {
-	const selectedPokemon = pokeArray[index];
-	if (savedPokes.length > 0 && <= 5) {
-		catchPokemon();
-		savedPokes.push(selectedPokemon);
-		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-	} else {
-		console.log("You can only save up to 5 Pokémons!");
-	}
-}
+const masterball = document.createElement("div");
+		masterball.classList.add("masterball");
+		masterball.dataset.typeId = pokemon.pokeTypeID;
 
-function updatePokePocket() {
-	caughtPokes.innerHTML = "";
-	savedPokes.forEach((pokemon) => {
-		innerHTML = "HELLO";
-	});
-}
+		const pokecard = document.createElement("div");
+		pokecard.classList.add("pokecard");
 
-updatePokePocket();
+		const sprite = document.createElement("img");
+		sprite.classList.add("sprite");
+		sprite.src = pokemon.sprite;
+		sprite.alt = `The official artwork of ${pokemon.name}`;
+
+		const name = document.createElement("div");
+		name.classList.add("name");
+		name.innerHTML = pokemon.name;
+
+		const typeName = document.createElement("div");
+		typeName.classList.add("type-name");
+		typeName.innerHTML = pokemon.type;
+
+		const id = document.createElement("div");
+		id.classList.add("id");
+		id.innerHTML = `#${pokemon.pokeID}`;
+
+		const btnContainer = document.createElement("div");
+		btnContainer.classList.add("btn-container");
+
+		
+		const deleteBtn = createDeleteBtn(index);
+		const editBtn = createEditBtn(index);
+
+		pokecard.append(sprite, name, typeName, id);
+		btnContainer.append(deleteBtn, editBtn);
+
+		masterball.append(pokecard, btnContainer);
+
+		caughtPokes.append(masterball);
 */
