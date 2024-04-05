@@ -87,7 +87,7 @@ body {
 }
 
 .name,
-.type,
+.type-name,
 .id {
 	color: black;
 	text-align: center;
