@@ -1,7 +1,9 @@
 // Global variables
-
 let pokeArray = [];
-let pokeNames = [];
+const pokeNames = [];
+const filterList = document.querySelector(".filter-list");
+const filterBtns = document.querySelectorAll(".filter");
+let masterballs = document.querySelectorAll(".masterball");
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -59,17 +61,21 @@ async function getPokeData(pokeNames) {
 
 			const pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
 			const pokeID = pokeData.id;
-			const pokeType = pokeData.types[0].type.url;
-			const typeData = await (await fetch(pokeType)).json();
+			const pokeTypeURL = pokeData.types[0].type.url;
+			const typeData = await (await fetch(pokeTypeURL)).json();
+			const pokeTypeID = typeData.id;
 			const type = typeData.name;
 			const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeID}.png`;
-			pokeArray.push({ sprite, name, type, pokeID });
+			pokeArray.push({ sprite, name, type, pokeID, pokeTypeID });
 		}
 
 		//pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		createMasterballs();
+
+		return pokeArray;
 	} catch (error) {
 		console.error("getPokeData 404", error);
+		throw error;
 	}
 }
 
@@ -110,42 +116,93 @@ function createEditBtn(index) {
 
 // Create pokémon-cards
 function createMasterballs() {
-	const maxFifty = pokeArray.slice(0, 50);
+    const maxFifty = pokeArray.slice(0, 50);
+    maxFifty.forEach((pokemon, index) => {
+        const masterball = document.createElement("div");
+        masterball.classList.add("masterball");
+        masterball.dataset.typeId = pokemon.pokeTypeID;
 
-	maxFifty.forEach((pokemon, index) => {
-		const masterball = document.createElement("div");
-		masterball.classList.add("masterball");
+        const pokecard = document.createElement("div");
+        pokecard.classList.add("pokecard");
 
-		const pokecard = document.createElement("div");
-		pokecard.classList.add("pokecard");
+        const sprite = document.createElement("img");
+        sprite.classList.add("sprite");
+        sprite.src = pokemon.sprite;
+        sprite.alt = `The official artwork of ${pokemon.name}`;
 
-		const sprite = document.createElement("img");
-		sprite.classList.add("sprite");
-		sprite.src = pokemon.sprite;
-		sprite.alt = `The official artwork of ${pokemon.name}`;
+        const name = document.createElement("div");
+        name.classList.add("name");
+        name.innerHTML = pokemon.name;
 
-		const name = document.createElement("div");
-		name.classList.add("name");
-		name.textContent = pokemon.name;
+        const type = document.createElement("div");
+        type.classList.add("type");
+        type.innerHTML = pokemon.type;
 
-		const type = document.createElement("div");
-		type.classList.add("type");
-		type.textContent = pokemon.type;
+        const id = document.createElement("div");
+        id.classList.add("id");
+        id.innerHTML = `#${pokemon.pokeID}`;
 
-		const btnContainer = document.createElement("div");
-		btnContainer.classList.add("btn-container");
+        const btnContainer = document.createElement("div");
+        btnContainer.classList.add("btn-container");
 
-		const saveBtn = createSaveBtn(index);
+        const saveBtn = createSaveBtn(index);
+        const deleteBtn = createDeleteBtn(index);
+        const editBtn = createEditBtn(index);
 
-		const deleteBtn = createDeleteBtn(index);
+        pokecard.append(sprite, name, type, id);
+        btnContainer.append(saveBtn, deleteBtn, editBtn);
 
-		const editBtn = createEditBtn(index);
+        masterball.append(pokecard, btnContainer);
 
-		pokecard.append(sprite, name, type);
-		btnContainer.append(saveBtn, deleteBtn, editBtn);
+        document.body.append(masterball);
+    });
 
-		masterball.append(pokecard, btnContainer);
+    masterballs = document.querySelectorAll(".masterball");
+    filterByType();
+}
 
-		document.body.append(masterball);
+
+// Filter -- the below function has an error code -- debug later
+filterBtns.forEach((img) => {
+	const filterBtn = img.getAttribute("data-type");
+	img.dataset.type = filterBtn;
+	img.addEventListener("click", filterByType);
+});
+
+function filterByType(event) {
+	const selectedType = event.currentTarget.getAttribute("data-type");
+	console.log("type", selectedType);
+
+	masterballs.forEach((masterball) => {
+		const type = masterball.dataset.typeId;
+		console.log("masterball type", type);
+		if (selectedType === "" || type === selectedType) {
+			masterball.style.display = "block";
+		} else {
+			masterball.style.display = "none";
+		}
 	});
 }
+
+/*
+0 all
+
+1 normal
+2 fighting
+3 flying
+4 poison
+5 ground
+6 rock
+7 bug
+8 ghost
+9 steel
+10 fire
+11 water
+12 grass
+13 electric
+14 psychic
+15 ice
+16 dragon
+17 dark
+18 fairy
+*/
