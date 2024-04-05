@@ -3,7 +3,7 @@ let pokeArray = [];
 const pokeNames = [];
 const filterList = document.querySelector(".filter-list");
 const filterBtns = document.querySelectorAll(".filter");
-const masterballs = document.querySelectorAll(".masterball");
+let masterballs = document.querySelectorAll(".masterball");
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -144,6 +144,10 @@ function createMasterballs() {
 
 		document.body.append(masterball);
 	});
+	masterballs = document.querySelectorAll(".masterball");
+
+	// Reapply filter after masterballs creation
+	filterByType();
 }
 
 // Filter
