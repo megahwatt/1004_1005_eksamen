@@ -133,7 +133,7 @@ function createMasterballs() {
 		name.innerHTML = pokemon.name;
 
 		const typeName = document.createElement("div");
-		typeName.classList.add("typeName");
+		typeName.classList.add("type-name");
 		typeName.innerHTML = pokemon.type;
 
 		const id = document.createElement("div");
