@@ -82,14 +82,6 @@ gottaCatchEmAll().then((pokeNames) => {
 });
 
 // Buttons
-function createDeleteBtn(index) {
-	const deleteBtn = document.createElement("button");
-	deleteBtn.classList.add("delete-btn");
-	deleteBtn.innerHTML = "DELETE";
-
-	return deleteBtn;
-}
-
 function createEditBtn(index) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
@@ -143,6 +135,7 @@ function createMasterballs() {
 	masterballs = document.querySelectorAll(".masterball");
 	filterByType("");
 }
+createMasterballs();
 
 // Filter and styling by typeID
 const typeColours = [
@@ -302,25 +295,28 @@ function updateSavedPokemons(index) {
 		caughtPokes.append(masterball);
 	});
 }
-/*
-0 all
 
-1 normal d0d1d0 / 9c9d9a
-2 fighting ffc53a / fa7d00
-3 flying bad9f7 / 7eb5e6
-4 poison cb7ce6 / 8c3ec3
-6 rock d9d5c3 / ada57b
-5 ground ce925a / 8c4e1e 
-7 bug cbd452 / 8c9d19
-8 ghost b27cb2 / 6e3e6b
-9 steel 9accd6 / 5d9db2
-10 fire f76868 / de2626
-11 water 63c0f7 / 267de6
-12 grass 7ed263 / 3f9d26
-13 electric fce03a / f4bc00
-14 psychic f780ba / e9457b
-15 ice 7bebff / 3fd2f4
-16 dragon 8c9eef / 505ed6
-17 dark 8f7c7e / 503e3c
-18 fairy f7a9f7 / ec6de6
-*/
+// Delete
+function createDeleteBtn(index) {
+	const deleteBtn = document.createElement("button");
+	deleteBtn.classList.add("delete-btn");
+	deleteBtn.innerHTML = "DELETE";
+
+	deleteBtn.addEventListener("click", function () {
+		releasePokemon(index);
+	});
+	return deleteBtn;
+}
+
+function releasePokemon(index) {
+	pokeArray.splice(index, 1);
+	savedPokes.splice(index, 1);
+
+	const releaseMasterball = masterballs[index];
+	if (releaseMasterball && releaseMasterball.parentNode) {
+		releaseMasterball.parentNode.removeChild(releaseMasterball);
+	}
+
+	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+	updateSavedPokemons();
+}
