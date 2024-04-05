@@ -261,6 +261,7 @@ function updateSavedPokemons(index) {
 		sprite.classList.add("sprite");
 		sprite.src = pokemon.sprite;
 		sprite.alt = `The official artwork of ${pokemon.name}`;
+		sprite.style.backgroundColor = typeColours[pokemon.pokeTypeID].dark;
 
 		const name = document.createElement("div");
 		name.classList.add("name");
@@ -278,7 +279,10 @@ function updateSavedPokemons(index) {
 		btnContainer.classList.add("btn-container");
 
 		const deleteBtn = createDeleteBtn(index);
+		deleteBtn.style.backgroundColor = typeColours[pokemon.pokeTypeID].light;
+
 		const editBtn = createEditBtn(index);
+		editBtn.style.backgroundColor = typeColours[pokemon.pokeTypeID].light;
 
 		pokecard.append(sprite, name, typeName, id);
 		btnContainer.append(deleteBtn, editBtn);
