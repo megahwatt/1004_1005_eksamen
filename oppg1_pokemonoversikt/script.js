@@ -1,5 +1,4 @@
 // Global variables
-
 let pokeArray = [];
 const pokeNames = [];
 const filterList = document.querySelector(".filter-list");
@@ -51,18 +50,21 @@ async function getPokeData(pokeNames) {
 
 			const pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
 			const pokeID = pokeData.id;
-			const pokeType = pokeData.types[0].type.url;
-			const typeData = await (await fetch(pokeType)).json();
+			const pokeTypeURL = pokeData.types[0].type.url;
+			const typeData = await (await fetch(pokeTypeURL)).json();
+			const pokeTypeID = typeData.id;
 			const type = typeData.name;
 			const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeID}.png`;
-			pokeArray.push({ sprite, name, type, pokeID });
+			pokeArray.push({ sprite, name, type, pokeID, pokeTypeID });
 		}
 
 		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		createMasterballs();
-		console.log("PokeArray:", pokeArray);
+
+		return pokeArray;
 	} catch (error) {
 		console.error("getPokeData 404", error);
+		throw error;
 	}
 }
 
@@ -106,7 +108,7 @@ function createMasterballs() {
 	pokeArray.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
-		masterball.dataset.type = pokemon.type.id;
+		masterball.dataset.typeId = pokemon.pokeTypeID;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -122,7 +124,7 @@ function createMasterballs() {
 
 		const type = document.createElement("div");
 		type.classList.add("type");
-		type.dataset.type = type.innerHTML = pokemon.type;
+		type.innerHTML = pokemon.type;
 
 		const id = document.createElement("div");
 		id.classList.add("id");
@@ -132,9 +134,7 @@ function createMasterballs() {
 		btnContainer.classList.add("btn-container");
 
 		const saveBtn = createSaveBtn(index);
-
 		const deleteBtn = createDeleteBtn(index);
-
 		const editBtn = createEditBtn(index);
 
 		pokecard.append(sprite, name, type, id);
@@ -149,7 +149,7 @@ function createMasterballs() {
 // Filter
 filterBtns.forEach((img) => {
 	const filterBtn = img.getAttribute("data-type");
-	img.dataset.type.id = filterBtn;
+	img.dataset.type = filterBtn;
 	img.addEventListener("click", filterByType);
 });
 
@@ -158,15 +158,16 @@ function filterByType(event) {
 	console.log("type", selectedType);
 
 	masterballs.forEach((masterball) => {
-		const type = masterball.dataset.type.id;
-		console.log("masterball type", type.id);
-		if (selectedType === "" || type.id === selectedType) {
+		const type = masterball.dataset.typeId;
+		console.log("masterball type", type);
+		if (selectedType === "" || type === selectedType) {
 			masterball.style.display = "block";
 		} else {
 			masterball.style.display = "none";
 		}
 	});
 }
+
 /*
 
 
@@ -190,6 +191,98 @@ function filterByType(event) {
 16 dragon
 17 dark
 18 fairy
+
+function createMasterballs() {
+    pokeArray.forEach((pokemon, index) => {
+        const masterball = document.createElement("div");
+        masterball.classList.add("masterball");
+        masterball.dataset.typeId = pokemon.type.id; // Changed dataset key to typeId
+
+        const pokecard = document.createElement("div");
+        pokecard.classList.add("pokecard");
+
+        const sprite = document.createElement("img");
+        sprite.classList.add("sprite");
+        sprite.src = pokemon.sprite;
+        sprite.alt = `The official artwork of ${pokemon.name}`;
+
+        const name = document.createElement("div");
+        name.classList.add("name");
+        name.innerHTML = pokemon.name;
+
+        const type = document.createElement("div");
+        type.classList.add("type");
+        type.innerHTML = pokemon.type; // Changed to set innerHTML directly
+
+        const id = document.createElement("div");
+        id.classList.add("id");
+        id.innerHTML = `#${pokemon.pokeID}`;
+
+        const btnContainer = document.createElement("div");
+        btnContainer.classList.add("btn-container");
+
+        const saveBtn = createSaveBtn(index);
+        const deleteBtn = createDeleteBtn(index);
+        const editBtn = createEditBtn(index);
+
+        pokecard.append(sprite, name, type, id);
+        btnContainer.append(saveBtn, deleteBtn, editBtn);
+
+        masterball.append(pokecard, btnContainer);
+
+        document.body.append(masterball);
+    });
+}
+
+function filterByType(event) {
+    const selectedType = event.currentTarget.getAttribute("data-type");
+    console.log("type", selectedType);
+
+    masterballs.forEach((masterball) => {
+        const type = masterball.dataset.typeId;
+        console.log("masterball type", type);
+        if (selectedType === "" || type === selectedType) {
+            masterball.style.display = "block";
+        } else {
+            masterball.style.display = "none";
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    createMasterballs();
+
+    // Debug: Log masterballs NodeList
+    const masterballs = document.querySelectorAll(".masterball");
+    console.log("Masterballs NodeList:", masterballs);
+
+    // Convert NodeList to array
+    const masterballsArray = Array.from(masterballs);
+
+    // Filter
+    filterBtns.forEach((img) => {
+        const filterBtn = img.getAttribute("data-type");
+        img.dataset.type = filterBtn;
+        img.addEventListener("click", filterByType);
+    });
+});
+
+function filterByType(event) {
+    const selectedType = event.currentTarget.getAttribute("data-type");
+    console.log("Selected type:", selectedType);
+
+    masterballsArray.forEach((masterball) => {
+        const type = masterball.dataset.typeId;
+        console.log("Masterball type:", type);
+        if (selectedType === "" || type === selectedType) {
+            masterball.style.display = "block";
+        } else {
+            masterball.style.display = "none";
+        }
+    });
+}
+
+
 
 
 */
