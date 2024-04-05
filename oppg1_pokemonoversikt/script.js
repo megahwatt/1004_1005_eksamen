@@ -1,6 +1,7 @@
 // Global variables
 let pokeArray = [];
 const pokeNames = [];
+let selectedType = "";
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
 
@@ -175,7 +176,7 @@ function filterByType(selectedType) {
 }
 
 function filterClick(event) {
-	let selectedType = event.currentTarget.getAttribute("data-type");
+	selectedType = event.currentTarget.getAttribute("data-type");
 	if (selectedType === "") {
 		refreshPokes();
 	} else {
@@ -183,25 +184,47 @@ function filterClick(event) {
 	}
 }
 
+// Filter styling by type
+const typeColours = {
+	normal: { light: "#d0d1d0", dark: "#9c9d9a" },
+	fighting: { light: "#ffc53a", dark: "#fa7d00" },
+	flying: { light: "#bad9f7", dark: "#7eb5e6" },
+	poison: { light: "#cb7ce6", dark: "#8c3ec3" },
+	ground: { light: "#ce925a", dark: "#8c4e1e" },
+	rock: { light: "#d9d5c3", dark: "#ada57b" },
+	bug: { light: "#cbd452", dark: "#8c9d19" },
+	ghost: { light: "#b27cb2", dark: "#6e3e6b" },
+	steel: { light: "#9accd6", dark: "#5d9db2" },
+	fire: { light: "#f76868", dark: "#de2626" },
+	water: { light: "#63c0f7", dark: "#267de6" },
+	grass: { light: "#7ed263", dark: "#3f9d26" },
+	electric: { light: "#fce03a", dark: "#f4bc00" },
+	psychic: { light: "#f780ba", dark: "#e9457b" },
+	ice: { light: "#7bebff", dark: "#3fd2f4" },
+	dragon: { light: "#8c9eef", dark: "#505ed6" },
+	dark: { light: "#8f7c7e", dark: "#503e3c" },
+	fairy: { light: "#f7a9f7", dark: "#ec6de6" },
+};
+
 /*
 0 all
 
-1 normal
-2 fighting
-3 flying
-4 poison
-5 ground
-6 rock
-7 bug
-8 ghost
-9 steel
-10 fire
-11 water
-12 grass
-13 electric
-14 psychic
-15 ice
-16 dragon
-17 dark
-18 fairy
+1 normal d0d1d0 / 9c9d9a
+2 fighting ffc53a / fa7d00
+3 flying bad9f7 / 7eb5e6
+4 poison cb7ce6 / 8c3ec3
+6 rock d9d5c3 / ada57b
+5 ground ce925a / 8c4e1e 
+7 bug cbd452 / 8c9d19
+8 ghost b27cb2 / 6e3e6b
+9 steel 9accd6 / 5d9db2
+10 fire f76868 / de2626
+11 water 63c0f7 / 267de6
+12 grass 7ed263 / 3f9d26
+13 electric fce03a / f4bc00
+14 psychic f780ba / e9457b
+15 ice 7bebff / 3fd2f4
+16 dragon 8c9eef / 505ed6
+17 dark 8f7c7e / 503e3c
+18 fairy f7a9f7 / ec6de6
 */
