@@ -69,7 +69,6 @@ async function getPokeData(pokeNames) {
 			pokeArray.push({ sprite, name, type, pokeID, pokeTypeID });
 		}
 
-		//pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		createMasterballs();
 
 		return pokeArray;
@@ -116,72 +115,77 @@ function createEditBtn(index) {
 
 // Create pokémon-cards
 function createMasterballs() {
-    const maxFifty = pokeArray.slice(0, 50);
-    maxFifty.forEach((pokemon, index) => {
-        const masterball = document.createElement("div");
-        masterball.classList.add("masterball");
-        masterball.dataset.typeId = pokemon.pokeTypeID;
+	const maxFifty = pokeArray.slice(0, 50);
+	maxFifty.forEach((pokemon, index) => {
+		const masterball = document.createElement("div");
+		masterball.classList.add("masterball");
+		masterball.dataset.typeId = pokemon.pokeTypeID;
 
-        const pokecard = document.createElement("div");
-        pokecard.classList.add("pokecard");
+		const pokecard = document.createElement("div");
+		pokecard.classList.add("pokecard");
 
-        const sprite = document.createElement("img");
-        sprite.classList.add("sprite");
-        sprite.src = pokemon.sprite;
-        sprite.alt = `The official artwork of ${pokemon.name}`;
+		const sprite = document.createElement("img");
+		sprite.classList.add("sprite");
+		sprite.src = pokemon.sprite;
+		sprite.alt = `The official artwork of ${pokemon.name}`;
 
-        const name = document.createElement("div");
-        name.classList.add("name");
-        name.innerHTML = pokemon.name;
+		const name = document.createElement("div");
+		name.classList.add("name");
+		name.innerHTML = pokemon.name;
 
-        const type = document.createElement("div");
-        type.classList.add("type");
-        type.innerHTML = pokemon.type;
+		const type = document.createElement("div");
+		type.classList.add("type");
+		type.innerHTML = pokemon.type;
 
-        const id = document.createElement("div");
-        id.classList.add("id");
-        id.innerHTML = `#${pokemon.pokeID}`;
+		const id = document.createElement("div");
+		id.classList.add("id");
+		id.innerHTML = `#${pokemon.pokeID}`;
 
-        const btnContainer = document.createElement("div");
-        btnContainer.classList.add("btn-container");
+		const btnContainer = document.createElement("div");
+		btnContainer.classList.add("btn-container");
 
-        const saveBtn = createSaveBtn(index);
-        const deleteBtn = createDeleteBtn(index);
-        const editBtn = createEditBtn(index);
+		const saveBtn = createSaveBtn(index);
+		const deleteBtn = createDeleteBtn(index);
+		const editBtn = createEditBtn(index);
 
-        pokecard.append(sprite, name, type, id);
-        btnContainer.append(saveBtn, deleteBtn, editBtn);
+		pokecard.append(sprite, name, type, id);
+		btnContainer.append(saveBtn, deleteBtn, editBtn);
 
-        masterball.append(pokecard, btnContainer);
+		masterball.append(pokecard, btnContainer);
 
-        document.body.append(masterball);
-    });
+		document.body.append(masterball);
+	});
 
-    masterballs = document.querySelectorAll(".masterball");
-    filterByType();
+	masterballs = document.querySelectorAll(".masterball");
+	filterByType();
 }
 
-
 // Filter -- the below function has an error code -- debug later
+
+// Function to refresh the page
+function refreshPokes() {
+	window.location.reload();
+}
+
 filterBtns.forEach((img) => {
-	const filterBtn = img.getAttribute("data-type");
-	img.dataset.type = filterBtn;
-	img.addEventListener("click", filterByType);
+	img.addEventListener("click", filterClick);
 });
 
 function filterByType(event) {
-	const selectedType = event.currentTarget.getAttribute("data-type");
-	console.log("type", selectedType);
-
+	let selectedType = event.currentTarget.getAttribute("data-type");
 	masterballs.forEach((masterball) => {
 		const type = masterball.dataset.typeId;
-		console.log("masterball type", type);
-		if (selectedType === "" || type === selectedType) {
-			masterball.style.display = "block";
-		} else {
-			masterball.style.display = "none";
-		}
+		masterball.style.display = selectedType === "" || type === selectedType ? "block" : "none";
 	});
+}
+
+function filterClick(event) {
+	let selectedType = event.currentTarget.getAttribute("data-type");
+	if (selectedType === "") {
+		refreshPokes();
+	} else {
+		filterByType(event);
+	}
 }
 
 /*
