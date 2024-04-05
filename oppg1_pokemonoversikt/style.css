@@ -9,7 +9,8 @@ body {
 	overflow-x: hidden;
 }
 
-body {
+body,
+.caught-pokes {
 	width: 100vw;
 	display: flex;
 	flex-flow: wrap;
@@ -20,6 +21,10 @@ body {
 .divider {
 	width: 100vw;
 	height: 0;
+}
+
+.hide {
+	display: none;
 }
 
 .filter-container {
@@ -55,10 +60,6 @@ body {
 	box-sizing: border-box;
 	display: flex;
 	justify-content: center;
-}
-
-.hide {
-	display: none;
 }
 
 .masterball {

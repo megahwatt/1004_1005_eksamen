@@ -215,31 +215,40 @@ function createSaveBtn(index) {
 
 	saveBtn.addEventListener("click", function () {
 		catchPokemon(index);
-		updateSavedPokemons();
+		updateSavedPokemons(index);
 	});
 
 	return saveBtn;
 }
 
-function updateSavedPokemons() {
-if (savedPokes.length <= 5) {
-	catchPokemon(index);
-	updateSavedPokemonsList();
-} else {
-	console.log("Oh no! You can only carry 5 Pokémons!")
-}
+function catchPokemon(index) {
+	const selectedPokemon = pokeArray[index];
+
+	// Check if the selected Pokemon is already saved
+
+	const alreadyCaughtThis = savedPokes.some((pokemon) => pokemon.name === selectedPokemon.name);
+
+	if (!alreadyCaughtThis) {
+		// If not already saved
+
+		if (savedPokes.length < 5) {
+			savedPokes.push(selectedPokemon);
+			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+			pokeArray = pokeArray.slice(0, index).concat(pokeArray.slice(index + 1));
+		} else {
+			console.log("Oh no! You can only carry 5 Pokémons!");
+		}
+	} else {
+		console.log("This Pokémon has already been caught!");
+	}
 }
 
-function catchPokemon(index)
-//saves the pokemon you just clicked on ("saveBtn")/SAVE
-//pushes to array, UI / caught-pokes, local storage
+function updateSavedPokemons(index) {
+	caughtPokes.innerHTML = "";
+	const savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
 
-function updateSavedPokemonList
-//caughtPokes.innerHTML = "";
-//let savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
-//creates new copy of the pokemon
-/*
-const masterball = document.createElement("div");
+	savedPokes.forEach((pokemon) => {
+		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeId = pokemon.pokeTypeID;
 
@@ -266,7 +275,6 @@ const masterball = document.createElement("div");
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
 
-		
 		const deleteBtn = createDeleteBtn(index);
 		const editBtn = createEditBtn(index);
 
@@ -276,4 +284,5 @@ const masterball = document.createElement("div");
 		masterball.append(pokecard, btnContainer);
 
 		caughtPokes.append(masterball);
-*/
+	});
+}
