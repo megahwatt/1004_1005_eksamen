@@ -221,6 +221,17 @@ function createSaveBtn(index) {
 	return saveBtn;
 }
 
+function tooManySaved() {
+	const alertBubble = document.createElement("div");
+	alertBubble.classList.add("alert-bubble");
+	alertBubble.innerHTML = `<p>OH NO!<br/>You can only carry 5 Pokémons!</p>`;
+	document.body.append(alertBubble);
+
+	setTimeout(() => {
+		document.body.removeChild(alertBubble);
+	}, 5000);
+}
+
 function catchPokemon(index) {
 	const selectedPokemon = pokeArray[index];
 
@@ -234,10 +245,9 @@ function catchPokemon(index) {
 			const cloakMasterball = masterballs[index];
 			if (cloakMasterball) {
 				cloakMasterball.classList.add("hide");
-			} else {
-				console.log("The masterball used shadow force, and disappeared! It's super effective!");
 			}
 		} else {
+			tooManySaved();
 			console.log("Oh no! You can only carry 5 Pokémons!");
 		}
 	} else {
