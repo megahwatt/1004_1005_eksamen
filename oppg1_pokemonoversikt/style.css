@@ -24,7 +24,7 @@ body,
 }
 
 .hide {
-	display: none;
+	display: none !important;
 }
 
 .filter-container {
@@ -117,10 +117,9 @@ body,
 .edit-btn {
 	font-size: 15px;
 	box-sizing: border-box;
-	background-color: white;
 	width: 148px;
 	height: 30px;
 	margin-top: 5px;
 	border: none;
-	background-color: aqua;
+	background-color: #fff;
 }

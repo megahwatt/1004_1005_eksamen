@@ -85,7 +85,7 @@ gottaCatchEmAll().then((pokeNames) => {
 function createDeleteBtn(index) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
-	deleteBtn.innerHTML = `DELETE`;
+	deleteBtn.innerHTML = "DELETE";
 
 	return deleteBtn;
 }
@@ -93,7 +93,7 @@ function createDeleteBtn(index) {
 function createEditBtn(index) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
-	editBtn.innerHTML = `EDIT`;
+	editBtn.innerHTML = "EDIT";
 
 	return editBtn;
 }
@@ -211,7 +211,7 @@ const caughtPokes = document.querySelector(".caught-pokes");
 function createSaveBtn(index) {
 	const saveBtn = document.createElement("button");
 	saveBtn.classList.add("save-btn");
-	saveBtn.innerHTML = `SAVE`;
+	saveBtn.innerHTML = "SAVE";
 
 	saveBtn.addEventListener("click", function () {
 		catchPokemon(index);
@@ -224,17 +224,19 @@ function createSaveBtn(index) {
 function catchPokemon(index) {
 	const selectedPokemon = pokeArray[index];
 
-	// Check if the selected Pokemon is already saved
-
 	const alreadyCaughtThis = savedPokes.some((pokemon) => pokemon.name === selectedPokemon.name);
 
 	if (!alreadyCaughtThis) {
-		// If not already saved
-
 		if (savedPokes.length < 5) {
 			savedPokes.push(selectedPokemon);
 			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-			pokeArray = pokeArray.slice(0, index).concat(pokeArray.slice(index + 1));
+
+			const cloakMasterball = masterballs[index];
+			if (cloakMasterball) {
+				cloakMasterball.classList.add("hide");
+			} else {
+				console.log("The masterball used shadow force, and disappeared! It's super effective!");
+			}
 		} else {
 			console.log("Oh no! You can only carry 5 Pokémons!");
 		}
@@ -245,9 +247,9 @@ function catchPokemon(index) {
 
 function updateSavedPokemons(index) {
 	caughtPokes.innerHTML = "";
-	const savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
+	const savedPokeList = JSON.parse(localStorage.getItem("savedPokes")) || [];
 
-	savedPokes.forEach((pokemon) => {
+	savedPokeList.forEach((pokemon) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeId = pokemon.pokeTypeID;
