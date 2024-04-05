@@ -9,6 +9,8 @@ body {
 	padding: 0;
 	font-size: 6.25%;
 	scroll-behavior: smooth;
+	font-family: "Courier New", Courier, monospace;
+	overflow-x: hidden;
 }
 
 body {
@@ -16,22 +18,23 @@ body {
 	display: flex;
 	flex-flow: wrap;
 	align-items: center;
+	justify-content: center;
 }
 
 .masterball {
 	display: flex;
 	box-sizing: border-box;
-	width: 200px;
-	height: 500px;
-	background-color: red;
+	width: 150px;
 	flex-direction: column;
+	margin: 10px;
+	border: 1px solid #000;
+	background-color: bisque;
 }
 
 .pokecard {
 	box-sizing: border-box;
-	background-color: blue;
-	width: 200px;
-	height: 250px;
+	width: 150px;
+	height: 200px;
 	position: relative;
 	display: flex;
 	flex-direction: column;
@@ -39,30 +42,42 @@ body {
 }
 
 .sprite {
-	width: 200px;
-	height: 200px;
-	background-color: black;
+	width: 150px;
+	height: 150px;
 }
 
 .name,
 .type {
-	color: aqua;
-	font-size: 20px;
+	color: black;
 	text-align: center;
+}
+
+.name {
+	font-size: 20px;
+	text-transform: uppercase;
+}
+
+.type {
+	font-size: 15px;
 }
 
 .btn-container {
 	box-sizing: border-box;
+	height: 90px;
 	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	flex-flow: column;
 }
 
 .save-btn,
 .delete-btn,
 .edit-btn {
+	font-size: 15px;
 	box-sizing: border-box;
 	background-color: white;
-	width: 50px;
-	height: 50px;
+	width: 148px;
+	height: 30px;
+	margin-top: 5px;
+	border: none;
+	background-color: aqua;
 }
