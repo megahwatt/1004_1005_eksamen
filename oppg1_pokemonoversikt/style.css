@@ -68,7 +68,6 @@ body {
 	flex-direction: column;
 	margin: 10px;
 	border: 1px solid #000;
-	background-color: bisque;
 }
 
 .pokecard {
@@ -84,10 +83,11 @@ body {
 .sprite {
 	width: 150px;
 	height: 150px;
+	margin-bottom: 5px;
 }
 
 .name,
-.type,
+.type-name,
 .id {
 	color: black;
 	text-align: center;
@@ -98,7 +98,7 @@ body {
 	text-transform: uppercase;
 }
 
-.type,
+.type-name,
 .id {
 	font-size: 12px;
 }
