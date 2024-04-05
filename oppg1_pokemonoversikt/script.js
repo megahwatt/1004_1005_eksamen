@@ -3,6 +3,7 @@ let pokeArray = [];
 const pokeNames = [];
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
+let savedPokes = JSON.parse(localStorage.getItem("savedPokes")) || [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -81,14 +82,6 @@ gottaCatchEmAll().then((pokeNames) => {
 });
 
 // Buttons
-function createSaveBtn(index) {
-	const saveBtn = document.createElement("button");
-	saveBtn.classList.add("save-btn");
-	saveBtn.innerHTML = `SAVE`;
-
-	return saveBtn;
-}
-
 function createDeleteBtn(index) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
@@ -212,25 +205,40 @@ function filterClick(event) {
 	}
 }
 
-/*
-0 all
+// Save Pokémons to array and local storage
+const caughtPokes = document.querySelector(".caught-pokes");
 
-1 normal d0d1d0 / 9c9d9a
-2 fighting ffc53a / fa7d00
-3 flying bad9f7 / 7eb5e6
-4 poison cb7ce6 / 8c3ec3
-6 rock d9d5c3 / ada57b
-5 ground ce925a / 8c4e1e 
-7 bug cbd452 / 8c9d19
-8 ghost b27cb2 / 6e3e6b
-9 steel 9accd6 / 5d9db2
-10 fire f76868 / de2626
-11 water 63c0f7 / 267de6
-12 grass 7ed263 / 3f9d26
-13 electric fce03a / f4bc00
-14 psychic f780ba / e9457b
-15 ice 7bebff / 3fd2f4
-16 dragon 8c9eef / 505ed6
-17 dark 8f7c7e / 503e3c
-18 fairy f7a9f7 / ec6de6
+function createSaveBtn(index) {
+	const saveBtn = document.createElement("button");
+	saveBtn.classList.add("save-btn");
+	saveBtn.innerHTML = `SAVE`;
+
+	saveBtn.addEventListener("click", function () {
+		catchPokemon(index);
+		updatePokePocket();
+	});
+
+	return saveBtn;
+}
+
+/*
+function catchPokemon(index) {
+	const selectedPokemon = pokeArray[index];
+	if (savedPokes.length > 0 && <= 5) {
+		catchPokemon();
+		savedPokes.push(selectedPokemon);
+		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+	} else {
+		console.log("You can only save up to 5 Pokémons!");
+	}
+}
+
+function updatePokePocket() {
+	caughtPokes.innerHTML = "";
+	savedPokes.forEach((pokemon) => {
+		innerHTML = "HELLO";
+	});
+}
+
+updatePokePocket();
 */
