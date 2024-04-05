@@ -9,10 +9,25 @@ body {
 	padding: 0;
 	font-size: 6.25%;
 	scroll-behavior: smooth;
+	font-family: "Courier New", Courier, monospace;
+	overflow-x: hidden;
+}
+
+body {
+	width: 100vw;
+	display: flex;
+	flex-flow: wrap;
+	align-items: center;
+	justify-content: center;
+}
+
+.divider {
+	width: 100vw;
+	height: 0;
 }
 
 .filter-container {
-	margin: 25px auto auto auto;
+	margin: 25px auto 50px auto;
 	box-sizing: border-box;
 	display: flex;
 	justify-content: center;
@@ -40,7 +55,7 @@ body {
 .zero {
 	max-width: 90px;
 	max-height: 90px;
-	margin: 25px auto auto auto;
+	margin: 25px auto 0 auto;
 	box-sizing: border-box;
 	display: flex;
 	justify-content: center;
@@ -51,37 +66,62 @@ body {
 }
 
 .masterball {
-	width: 250px;
-	height: 500px;
-	background-color: red;
+	display: flex;
+	box-sizing: border-box;
+	width: 150px;
+	flex-direction: column;
+	margin: 10px;
+	border: 1px solid #000;
+	background-color: bisque;
 }
 
 .pokecard {
-	background-color: blue;
-	width: 225px;
-	height: 500px;
+	box-sizing: border-box;
+	width: 150px;
+	height: 200px;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .sprite {
-	width: 200px;
-	height: 200px;
-	background-color: black;
+	width: 150px;
+	height: 150px;
 }
 
 .name,
 .type {
-	color: aqua;
-	font-size: 50px;
+	color: black;
+	text-align: center;
+}
+
+.name {
+	font-size: 20px;
+	text-transform: uppercase;
+}
+
+.type {
+	font-size: 15px;
 }
 
 .btn-container {
+	box-sizing: border-box;
+	height: 90px;
+	width: 100%;
 	display: flex;
+	flex-flow: column;
 }
 
 .save-btn,
 .delete-btn,
 .edit-btn {
+	font-size: 15px;
+	box-sizing: border-box;
 	background-color: white;
-	width: 100px;
-	height: 100px;
+	width: 148px;
+	height: 30px;
+	margin-top: 5px;
+	border: none;
+	background-color: aqua;
 }
