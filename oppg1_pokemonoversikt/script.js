@@ -19,13 +19,6 @@ async function gottaCatchEmAll() {
 			(await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
 		]);
 
-		/*
-		console.log("genI", dataGenI);
-		console.log("genII", dataGenII);
-		console.log("genIII", dataGenIII);
-		console.log("genIV", dataGenIV);
-		*/
-
 		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
 			data.pokemon_species.forEach((pokemon) => {
 				pokeNames.push(pokemon.name);
@@ -158,7 +151,7 @@ function createMasterballs() {
 	filterByType("");
 }
 
-// Filter and styling by typeName
+// Filter and styling by typeID
 const typeColours = [
 	{ light: "transparent", dark: "transparent" }, // all
 	{ light: "#d0d1d0", dark: "#9c9d9a" }, // normal
@@ -192,12 +185,17 @@ filterBtns.forEach((img) => {
 function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
 		const typeID = masterball.dataset.typeId;
+		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 
 		masterball.style.display = selectedType === "" || typeID === selectedType ? "block" : "none";
 
-		if (typeColours[typeID]) {
+		if (selectedType === "") {
+			masterball.querySelector(".sprite").style.backgroundColor = "transparent";
+			buttons.forEach((button) => {
+				button.style.backgroundColor = "transparent";
+			});
+		} else {
 			masterball.querySelector(".sprite").style.backgroundColor = typeColours[typeID].dark;
-			const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 			buttons.forEach((button) => {
 				button.style.backgroundColor = typeColours[typeID].light;
 			});
