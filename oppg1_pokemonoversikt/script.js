@@ -159,26 +159,27 @@ function createMasterballs() {
 }
 
 // Filter and styling by typeName
-const typeColours = {
-	1: { light: "#d0d1d0", dark: "#9c9d9a" }, // normal
-	2: { light: "#ffc53a", dark: "#fa7d00" }, // fighting
-	3: { light: "#bad9f7", dark: "#7eb5e6" }, // flying
-	4: { light: "#cb7ce6", dark: "#8c3ec3" }, // poison
-	5: { light: "#ce925a", dark: "#8c4e1e" }, // ground
-	6: { light: "#d9d5c3", dark: "#ada57b" }, // rock
-	7: { light: "#cbd452", dark: "#8c9d19" }, // bug
-	8: { light: "#b27cb2", dark: "#6e3e6b" }, // ghost
-	9: { light: "#9accd6", dark: "#5d9db2" }, // steel
-	10: { light: "#f76868", dark: "#de2626" }, // fire
-	11: { light: "#63c0f7", dark: "#267de6" }, // water
-	12: { light: "#7ed263", dark: "#3f9d26" }, // grass
-	13: { light: "#fce03a", dark: "#f4bc00" }, // electric
-	14: { light: "#f780ba", dark: "#e9457b" }, // psychic
-	15: { light: "#7bebff", dark: "#3fd2f4" }, // ice
-	16: { light: "#8c9eef", dark: "#505ed6" }, // dragon
-	17: { light: "#8f7c7e", dark: "#503e3c" }, // dark
-	18: { light: "#f7a9f7", dark: "#ec6de6" }, // fairy
-};
+const typeColours = [
+	{ light: "transparent", dark: "transparent" }, // all
+	{ light: "#d0d1d0", dark: "#9c9d9a" }, // normal
+	{ light: "#ffc53a", dark: "#fa7d00" }, // fighting
+	{ light: "#bad9f7", dark: "#7eb5e6" }, // flying
+	{ light: "#cb7ce6", dark: "#8c3ec3" }, // poison
+	{ light: "#ce925a", dark: "#8c4e1e" }, // ground
+	{ light: "#d9d5c3", dark: "#ada57b" }, // rock
+	{ light: "#cbd452", dark: "#8c9d19" }, // bug
+	{ light: "#b27cb2", dark: "#6e3e6b" }, // ghost
+	{ light: "#9accd6", dark: "#5d9db2" }, // steel
+	{ light: "#f76868", dark: "#de2626" }, // fire
+	{ light: "#63c0f7", dark: "#267de6" }, // water
+	{ light: "#7ed263", dark: "#3f9d26" }, // grass
+	{ light: "#fce03a", dark: "#f4bc00" }, // electric
+	{ light: "#f780ba", dark: "#e9457b" }, // psychic
+	{ light: "#7bebff", dark: "#3fd2f4" }, // ice
+	{ light: "#8c9eef", dark: "#505ed6" }, // dragon
+	{ light: "#8f7c7e", dark: "#503e3c" }, // dark
+	{ light: "#f7a9f7", dark: "#ec6de6" }, // fairy
+];
 
 function refreshPokes() {
 	window.location.reload();
@@ -191,6 +192,7 @@ filterBtns.forEach((img) => {
 function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
 		const typeID = masterball.dataset.typeId;
+
 		masterball.style.display = selectedType === "" || typeID === selectedType ? "block" : "none";
 
 		if (typeColours[typeID]) {
@@ -207,7 +209,6 @@ function filterClick(event) {
 	selectedType = event.currentTarget.getAttribute("data-type");
 	if (selectedType === "") {
 		refreshPokes();
-		filterByType("");
 	} else {
 		filterByType(selectedType);
 	}
