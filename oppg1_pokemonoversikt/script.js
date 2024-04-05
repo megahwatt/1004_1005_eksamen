@@ -187,6 +187,7 @@ function refreshPokes() {
 filterBtns.forEach((img) => {
 	img.addEventListener("click", filterClick);
 });
+
 function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
 		const typeID = masterball.dataset.typeId;
@@ -194,22 +195,19 @@ function filterByType(selectedType) {
 
 		if (typeColours[typeID]) {
 			masterball.querySelector(".sprite").style.backgroundColor = typeColours[typeID].dark;
+			const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
+			buttons.forEach((button) => {
+				button.style.backgroundColor = typeColours[typeID].light;
+			});
 		}
 	});
 }
-/*
-function filterByType(selectedType) {
-	masterballs.forEach((masterball) => {
-		const type = masterball.dataset.typeId;
-		masterball.style.display = selectedType === "" || type === selectedType ? "block" : "none";
-	});
-}
-*/
 
 function filterClick(event) {
 	selectedType = event.currentTarget.getAttribute("data-type");
 	if (selectedType === "") {
 		refreshPokes();
+		filterByType("");
 	} else {
 		filterByType(selectedType);
 	}
