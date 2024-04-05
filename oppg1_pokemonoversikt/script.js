@@ -145,7 +145,7 @@ function createMasterballs() {
 filterBtns.forEach((img) => {
 	const filterBtn = img.getAttribute("data-type");
 	img.dataset.type = filterBtn;
-	img.addEventListener("click", filterByType);
+	img.addEventListener("click", filterByType());
 });
 
 function filterByType(event) {
@@ -155,9 +155,9 @@ function filterByType(event) {
 	masterballs.forEach((masterball) => {
 		const type = masterball.dataset.type;
 		if (selectedType === "" || type === selectedType) {
-			masterballs.classList.remove("hide");
+			masterball.style.display = "block";
 		} else {
-			masterballs.classList.add("hide");
+			masterball.style.display = "none";
 		}
 	});
 }
