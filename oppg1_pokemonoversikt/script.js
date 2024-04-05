@@ -60,6 +60,7 @@ async function getPokeData(pokeNames) {
 
 		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
 		createMasterballs();
+		console.log("PokeArray:", pokeArray);
 	} catch (error) {
 		console.error("getPokeData 404", error);
 	}
@@ -105,7 +106,7 @@ function createMasterballs() {
 	pokeArray.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
-		masterball.dataset.type = pokemon.type;
+		masterball.dataset.type = pokemon.type.id;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -123,6 +124,10 @@ function createMasterballs() {
 		type.classList.add("type");
 		type.dataset.type = type.innerHTML = pokemon.type;
 
+		const id = document.createElement("div");
+		id.classList.add("id");
+		id.innerHTML = `#${pokemon.pokeID}`;
+
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
 
@@ -132,7 +137,7 @@ function createMasterballs() {
 
 		const editBtn = createEditBtn(index);
 
-		pokecard.append(sprite, name, type);
+		pokecard.append(sprite, name, type, id);
 		btnContainer.append(saveBtn, deleteBtn, editBtn);
 
 		masterball.append(pokecard, btnContainer);
@@ -144,8 +149,8 @@ function createMasterballs() {
 // Filter
 filterBtns.forEach((img) => {
 	const filterBtn = img.getAttribute("data-type");
-	img.dataset.type = filterBtn;
-	img.addEventListener("click", filterByType());
+	img.dataset.type.id = filterBtn;
+	img.addEventListener("click", filterByType);
 });
 
 function filterByType(event) {
@@ -153,8 +158,9 @@ function filterByType(event) {
 	console.log("type", selectedType);
 
 	masterballs.forEach((masterball) => {
-		const type = masterball.dataset.type;
-		if (selectedType === "" || type === selectedType) {
+		const type = masterball.dataset.type.id;
+		console.log("masterball type", type.id);
+		if (selectedType === "" || type.id === selectedType) {
 			masterball.style.display = "block";
 		} else {
 			masterball.style.display = "none";
@@ -184,4 +190,6 @@ function filterByType(event) {
 16 dragon
 17 dark
 18 fairy
+
+
 */

@@ -91,18 +91,20 @@ body {
 }
 
 .name,
-.type {
+.type,
+.id {
 	color: black;
 	text-align: center;
 }
 
 .name {
-	font-size: 20px;
+	font-size: 15px;
 	text-transform: uppercase;
 }
 
-.type {
-	font-size: 15px;
+.type,
+.id {
+	font-size: 12px;
 }
 
 .btn-container {
