@@ -160,24 +160,24 @@ function createMasterballs() {
 
 // Filter and styling by typeName
 const typeColours = {
-	normal: { light: "#d0d1d0", dark: "#9c9d9a" },
-	fighting: { light: "#ffc53a", dark: "#fa7d00" },
-	flying: { light: "#bad9f7", dark: "#7eb5e6" },
-	poison: { light: "#cb7ce6", dark: "#8c3ec3" },
-	ground: { light: "#ce925a", dark: "#8c4e1e" },
-	rock: { light: "#d9d5c3", dark: "#ada57b" },
-	bug: { light: "#cbd452", dark: "#8c9d19" },
-	ghost: { light: "#b27cb2", dark: "#6e3e6b" },
-	steel: { light: "#9accd6", dark: "#5d9db2" },
-	fire: { light: "#f76868", dark: "#de2626" },
-	water: { light: "#63c0f7", dark: "#267de6" },
-	grass: { light: "#7ed263", dark: "#3f9d26" },
-	electric: { light: "#fce03a", dark: "#f4bc00" },
-	psychic: { light: "#f780ba", dark: "#e9457b" },
-	ice: { light: "#7bebff", dark: "#3fd2f4" },
-	dragon: { light: "#8c9eef", dark: "#505ed6" },
-	dark: { light: "#8f7c7e", dark: "#503e3c" },
-	fairy: { light: "#f7a9f7", dark: "#ec6de6" },
+	1: { light: "#d0d1d0", dark: "#9c9d9a" }, // normal
+	2: { light: "#ffc53a", dark: "#fa7d00" }, // fighting
+	3: { light: "#bad9f7", dark: "#7eb5e6" }, // flying
+	4: { light: "#cb7ce6", dark: "#8c3ec3" }, // poison
+	5: { light: "#ce925a", dark: "#8c4e1e" }, // ground
+	6: { light: "#d9d5c3", dark: "#ada57b" }, // rock
+	7: { light: "#cbd452", dark: "#8c9d19" }, // bug
+	8: { light: "#b27cb2", dark: "#6e3e6b" }, // ghost
+	9: { light: "#9accd6", dark: "#5d9db2" }, // steel
+	10: { light: "#f76868", dark: "#de2626" }, // fire
+	11: { light: "#63c0f7", dark: "#267de6" }, // water
+	12: { light: "#7ed263", dark: "#3f9d26" }, // grass
+	13: { light: "#fce03a", dark: "#f4bc00" }, // electric
+	14: { light: "#f780ba", dark: "#e9457b" }, // psychic
+	15: { light: "#7bebff", dark: "#3fd2f4" }, // ice
+	16: { light: "#8c9eef", dark: "#505ed6" }, // dragon
+	17: { light: "#8f7c7e", dark: "#503e3c" }, // dark
+	18: { light: "#f7a9f7", dark: "#ec6de6" }, // fairy
 };
 
 function refreshPokes() {
