@@ -1,7 +1,6 @@
 // Global variables
 let pokeArray = [];
 const pokeNames = [];
-const filterList = document.querySelector(".filter-list");
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
 
@@ -155,14 +154,11 @@ function createMasterballs() {
 
 		document.body.append(masterball);
 	});
-
 	masterballs = document.querySelectorAll(".masterball");
-	filterByType();
+	filterByType("");
 }
 
-// Filter -- the below function has an error code -- debug later
-
-// Function to refresh the page
+// Filter
 function refreshPokes() {
 	window.location.reload();
 }
@@ -171,8 +167,7 @@ filterBtns.forEach((img) => {
 	img.addEventListener("click", filterClick);
 });
 
-function filterByType(event) {
-	let selectedType = event.currentTarget.getAttribute("data-type");
+function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
 		const type = masterball.dataset.typeId;
 		masterball.style.display = selectedType === "" || type === selectedType ? "block" : "none";
@@ -184,7 +179,7 @@ function filterClick(event) {
 	if (selectedType === "") {
 		refreshPokes();
 	} else {
-		filterByType(event);
+		filterByType(selectedType);
 	}
 }
 
