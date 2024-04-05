@@ -187,13 +187,24 @@ function refreshPokes() {
 filterBtns.forEach((img) => {
 	img.addEventListener("click", filterClick);
 });
+function filterByType(selectedType) {
+	masterballs.forEach((masterball) => {
+		const typeID = masterball.dataset.typeId;
+		masterball.style.display = selectedType === "" || typeID === selectedType ? "block" : "none";
 
+		if (typeColours[typeID]) {
+			masterball.querySelector(".sprite").style.backgroundColor = typeColours[typeID].dark;
+		}
+	});
+}
+/*
 function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
 		const type = masterball.dataset.typeId;
 		masterball.style.display = selectedType === "" || type === selectedType ? "block" : "none";
 	});
 }
+*/
 
 function filterClick(event) {
 	selectedType = event.currentTarget.getAttribute("data-type");
