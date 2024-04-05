@@ -301,7 +301,7 @@ function updateSavedPokemons(index) {
 
 		caughtPokes.append(masterball);
 	});
-
+}
 /*
 0 all
 
