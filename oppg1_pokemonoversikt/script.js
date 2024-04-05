@@ -1,8 +1,6 @@
 // Global variables
 let pokeArray = [];
 const pokeNames = [];
-let selectedType = "";
-const activeFilter = selectedType !== "";
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
 
@@ -120,7 +118,7 @@ function createMasterballs() {
 	maxFifty.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
-		masterball.dataset.typeId = pokemon.typeID;
+		masterball.dataset.typeId = pokemon.pokeTypeID;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -136,7 +134,7 @@ function createMasterballs() {
 
 		const typeName = document.createElement("div");
 		typeName.classList.add("typeName");
-		typeName.innerHTML = pokemon.typeName;
+		typeName.innerHTML = pokemon.type;
 
 		const id = document.createElement("div");
 		id.classList.add("id");
@@ -182,10 +180,6 @@ const typeColours = {
 	fairy: { light: "#f7a9f7", dark: "#ec6de6" },
 };
 
-function assignColours(typeName) {
-	return typeColors[typeName] || { light: "#ffffff", dark: "#ffffff" };
-}
-
 function refreshPokes() {
 	window.location.reload();
 }
@@ -196,22 +190,13 @@ filterBtns.forEach((img) => {
 
 function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
-		const typeID = masterball.dataset.typeId;
-		const colors = typeColours[typeID];
-
-		masterball.querySelector(".sprite").style.backgroundColor = colors.dark;
-
-		const buttons = masterball.querySelectorAll(".btn-container button");
-		buttons.forEach((button) => {
-			button.style.backgroundColor = colors.light;
-		});
-
-		masterball.style.display = selectedType === "" || typeName === selectedType ? "block" : "none";
+		const type = masterball.dataset.typeId;
+		masterball.style.display = selectedType === "" || type === selectedType ? "block" : "none";
 	});
 }
 
 function filterClick(event) {
-	selectedType = event.currentTarget.getAttribute("data-typeName");
+	selectedType = event.currentTarget.getAttribute("data-type");
 	if (selectedType === "") {
 		refreshPokes();
 	} else {
