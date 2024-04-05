@@ -2,6 +2,9 @@
 
 let pokeArray = [];
 const pokeNames = [];
+const filterList = document.querySelector(".filter-list");
+const filterBtns = document.querySelectorAll(".filter");
+const masterballs = document.querySelectorAll(".masterball");
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -118,7 +121,7 @@ function createMasterballs() {
 
 		const type = document.createElement("div");
 		type.classList.add("type");
-		type.innerHTML = pokemon.type;
+		type.dataset.type = type.innerHTML = pokemon.type;
 
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
@@ -139,19 +142,24 @@ function createMasterballs() {
 }
 
 // Filter
-const filterList = document.querySelector(".filter-list");
-
-const filterBtns = document.querySelectorAll(".filter");
-
 filterBtns.forEach((img) => {
 	const filterBtn = img.getAttribute("data-type");
 	img.dataset.type = filterBtn;
 	img.addEventListener("click", filterByType);
 });
 
-function filterByType() {
-	selectedType = event.target.getAttribute("data-type");
+function filterByType(event) {
+	const selectedType = event.currentTarget.getAttribute("data-type");
 	console.log("type", selectedType);
+
+	masterballs.forEach((masterball) => {
+		const type = masterball.dataset.type;
+		if (selectedType === "" || type === selectedType) {
+			masterballs.classList.remove("hide");
+		} else {
+			masterballs.classList.add("hide");
+		}
+	});
 }
 /*
 

@@ -1,73 +1,77 @@
-// Fetch API and data about each pokémon in Gen I, II, III and IV
-/*
-Very manual error-handling of the Pokémons that could not be fetched,
-due to issues with the throw error function.
-Proritised the exam as a whole over elegant error handling.
-*/
+// Modify the createMasterballs function to include data attributes for Pokémon types
+function createMasterballs() {
+	pokeArray.forEach((pokemon, index) => {
+		const masterball = document.createElement("div");
+		masterball.classList.add("masterball");
+		masterball.dataset.type = pokemon.type; // Add dataset attribute for type
 
-let pokeArray = [];
+		const pokecard = document.createElement("div");
+		pokecard.classList.add("pokecard");
 
-async function gottaCatchEmAll() {
-	try {
-		const pokeNames = [];
+		// Add data-type attribute to sprite and type elements
+		const sprite = document.createElement("img");
+		sprite.classList.add("sprite");
+		sprite.src = pokemon.sprite;
+		sprite.alt = `The official artwork of ${pokemon.name}`;
+		sprite.dataset.type = pokemon.type;
 
-		const [dataGenI, dataGenII, dataGenIII, dataGenIV] = await Promise.all([
-			(await fetch("https://pokeapi.co/api/v2/generation/1")).json(),
-			(await fetch("https://pokeapi.co/api/v2/generation/2")).json(),
-			(await fetch("https://pokeapi.co/api/v2/generation/3")).json(),
-			(await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
-		]);
+		const name = document.createElement("div");
+		name.classList.add("name");
+		name.innerHTML = pokemon.name;
 
-		console.log("genI", dataGenI);
-		console.log("genII", dataGenII);
-		console.log("genIII", dataGenIII);
-		console.log("genIV", dataGenIV);
+		const type = document.createElement("div");
+		type.classList.add("type");
+		type.innerHTML = pokemon.type;
+		type.dataset.type = pokemon.type;
 
-		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
-			data.pokemon_species.forEach((pokemon) => {
-				pokeNames.push(pokemon.name);
-			});
-		});
-
-		console.log("Gotcha! First four generations were caught!");
-		return pokeNames;
-	} catch (error) {
-		console.error("Oh no, the Pokémons broke free!", error);
-	}
+		// Other code remains unchanged...
+	});
 }
 
-async function getPokeData(pokeNames) {
-	try {
-		for (const name of pokeNames) {
-			if (name.split("-").length > 1) {
-				continue;
-			}
-			if (name === "deoxys" || name === "giratina" || name === "wormadam" || name === "shaymin") {
-				continue;
-			}
-
-			const pokeData = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`)).json();
-			const pokeID = pokeData.id;
-			const pokeType = pokeData.types[0].type.url;
-			const typeData = await (await fetch(pokeType)).json();
-			const type = typeData.name;
-			const sprite = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokeID}.png`;
-			pokeArray.push({ sprite, name, type, pokeID });
-		}
-
-		pokeArray.sort((a, b) => a.pokeID - b.pokeID);
-		createMasterballs();
-	} catch (error) {
-		console.error("getPokeData 404", error);
-	}
-}
-
-gottaCatchEmAll().then((pokeNames) => {
-	getPokeData(pokeNames)
-		.then((result) => {
-			console.log("pokeData", result);
-		})
-		.catch((error) => {
-			console.error("call gottaCatchEmAll 404", error);
-		});
+// Attach event listeners to filter buttons using forEach and arrow function
+filterBtns.forEach((btn) => {
+	btn.addEventListener("click", filterByType);
 });
+
+// Filter by type function
+function filterByType(event) {
+	const selectedType = event.currentTarget.getAttribute("data-type"); // Get selected type from button
+	const masterballs = document.querySelectorAll(".masterball");
+
+	masterballs.forEach((masterball) => {
+		const type = masterball.dataset.type;
+		if (selectedType === "all" || type === selectedType) {
+			masterball.style.display = "block"; // Show matching Pokémon cards
+		} else {
+			masterball.style.display = "none"; // Hide non-matching Pokémon cards
+		}
+	});
+}
+
+function filterByType(event) {
+	const selectedType = event.currentTarget.getAttribute("data-type");
+	console.log("type", selectedType);
+
+	masterballs.forEach((masterball) => {
+		const type = masterball.dataset.type;
+		if (selectedType === "" || type === selectedType) {
+			masterball.classList.remove("hide"); // Remove hide class to show matching Pokémon cards
+		} else {
+			masterball.classList.add("hide"); // Add hide class to hide non-matching Pokémon cards
+		}
+	});
+}
+
+function filterByType(event) {
+	const selectedType = event.currentTarget.getAttribute("data-type");
+	console.log("type", selectedType);
+
+	masterballs.forEach((masterball) => {
+		const type = masterball.dataset.type;
+		if (selectedType === "" || type === selectedType) {
+			masterball.classList.remove("hide"); // Remove hide class to show matching Pokémon cards
+		} else {
+			masterball.classList.add("hide"); // Add hide class to hide non-matching Pokémon cards
+		}
+	});
+}
