@@ -135,6 +135,7 @@ function createMasterballs() {
 	masterballs = document.querySelectorAll(".masterball");
 	filterByType("");
 }
+createMasterballs();
 
 // Filter and styling by typeID
 const typeColours = [
@@ -304,23 +305,18 @@ function createDeleteBtn(index) {
 	deleteBtn.addEventListener("click", function () {
 		releasePokemon(index);
 	});
-
 	return deleteBtn;
 }
 
 function releasePokemon(index) {
-	const deletedPokemon = pokeArray.splice(index, 1)[0];
+	pokeArray.splice(index, 1);
+	savedPokes.splice(index, 1);
 
-	// Remove the Pokémon from savedPokes
-	const savedPokesIndex = savedPokes.findIndex((pokemon) => pokemon.name === deletedPokemon.name);
-	if (savedPokesIndex !== -1) {
-		savedPokes.splice(savedPokesIndex, 1);
+	const releaseMasterball = masterballs[index];
+	if (releaseMasterball && releaseMasterball.parentNode) {
+		releaseMasterball.parentNode.removeChild(releaseMasterball);
 	}
 
 	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-
-	const sellMasterball = masterballs[index];
-	sellMasterball.parentNode.removeChild(sellMasterball);
-
-	console.log(`${deletedPokemon.name} was released into the wild! Bye bye.`);
+	updateSavedPokemons();
 }
