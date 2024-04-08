@@ -3,6 +3,7 @@ let pokeArray = [];
 const pokeNames = [];
 let savedPokes = [];
 
+const container = document.querySelector(".container");
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
 
@@ -184,7 +185,7 @@ function createMasterballs() {
 
 		masterball.append(pokecard, btnContainer);
 
-		document.body.append(masterball);
+		container.append(masterball);
 	});
 	masterballs = document.querySelectorAll(".masterball");
 	filterByType("");
@@ -392,10 +393,36 @@ function fetchEasteregg() {
 	return eastereggs[randomIndex].path;
 }
 
-function assemblePokemon(index, yourPokemon) {
+function createPokemonBtn() {
+	const createBtn = document.querySelector("#create-btn");
+
+	createBtn.addEventListener("click", function () {
+		const yourPokeType = document.querySelector("#type-selector").value;
+		createPokemon(yourPokeType);
+	});
+
+	document.addEventListener("keydown", function (event) {
+		if (event.key === "Enter") {
+			const yourPokeType = document.querySelector("#type-selector").value;
+			createPokemon(yourPokeType);
+		}
+	});
+}
+createPokemonBtn();
+
+function createPokemon(yourPokeType) {
+	const yourPokemon = { yourPokeType, eastereggSprite: fetchEasteregg() };
+
+	pokeArray.push(yourPokemon);
+	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+
+	assemblePokemon(pokeArray.length - 1, yourPokemon, yourPokeType);
+}
+
+function assemblePokemon(index, yourPokemon, yourPokeType) {
 	const newCard = document.createElement("div");
 	newCard.classList.add("new-card");
-	newCard.dataset.typeId = yourPokeType.id;
+	newCard.dataset.typeId = yourPokeType;
 
 	const pokecard = document.createElement("div");
 	pokecard.classList.add("pokecard");
@@ -404,15 +431,15 @@ function assemblePokemon(index, yourPokemon) {
 	eastereggSprite.classList.add("easteregg-sprite");
 	eastereggSprite.src = yourPokemon.eastereggSprite;
 	eastereggSprite.alt = `Sprite of ${yourPokemon.yourPokeName}`;
-	eastereggSprite.style.backgroundColor = typeInfo[yourPokeType].dark;
+	//eastereggSprite.style.backgroundColor = yourPokeType.typeInfo.dark;
 
 	const yourPokeName = document.createElement("div");
 	yourPokeName.classList.add("your-pokename");
 	yourPokeName.innerHTML = yourPokemon.yourPokeName;
 
-	const yourPokeType = document.createElement("div");
-	yourPokeType.classList.add("your-poke-type");
-	yourPokeType.innerHTML = typeInfo[yourPokeType].name;
+	const yourPokeTypeElement = document.createElement("div");
+	yourPokeTypeElement.classList.add("your-poke-type");
+	//yourPokeTypeElement.innerHTML = typeInfo[yourPokeType].name;
 
 	const btnContainer = document.createElement("div");
 	btnContainer.classList.add("btn-container");
@@ -421,34 +448,13 @@ function assemblePokemon(index, yourPokemon) {
 	const deleteBtn = createDeleteBtn(index);
 	const editBtn = createEditBtn(index);
 
-	pokecard.append(eastereggSprite, yourPokeName, yourPokeType, btnContainer);
+	pokecard.append(eastereggSprite, yourPokeName, yourPokeTypeElement, btnContainer);
 
 	btnContainer.append(saveBtn, deleteBtn, editBtn);
 
 	newCard.append(pokecard, btnContainer);
 
-	document.body.append(newCard);
+	container.prepend(newCard);
 
 	return newCard;
-}
-
-function createPokemon() {
-	const yourPokemon = assemblePokemon();
-
-	pokeArray.push(yourPokemon);
-	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
-
-	assemblePokemon(pokeArray.length - 1, yourPokemon);
-}
-
-function createPokemonBtn() {
-	document.querySelector("#create-btn").addEventListener("click", createPokemon);
-	console.log("button clicked");
-
-	document.addEventListener("keydown", function (event) {
-		if (event.key === "Enter") {
-			createPokemon();
-		}
-	});
-	console.log("enter clicked");
 }

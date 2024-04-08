@@ -10,7 +10,8 @@ body {
 }
 
 body,
-.caught-pokes {
+.caught-pokes,
+.container {
 	width: 100vw;
 	display: flex;
 	flex-flow: wrap;
