@@ -324,33 +324,32 @@ function createEditBtn(index) {
 	return editBtn;
 }
 
-function editPokemon() {
+function editPokemon(index) {
 	const newPokeName = prompt("Gi Pokémonen et kallenavn!");
 	const newPokeType = parseInt(prompt("Skriv inn et tall fra 1-18 for å endre Pokémonen's type."));
 
 	if (newPokeName && newPokeType >= 1 && newPokeType <= 18) {
-		pokeArray.name = newPokeName;
+		if (index >= 0 && index < pokeArray.length) {
+			pokeArray[index].name = newPokeName;
 
-		pokeArray.pokeTypeID = newPokeType;
+			pokeArray[index].pokeTypeID = newPokeType;
 
-		const typeName = typeInfo.find((type) => type.id === newPokeType).name;
-		pokeArray.type = typeName;
+			pokeArray[index].type = typeInfo.find((type) => type.id === newPokeType).name;
 
-		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+			localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+		} else if (index >= 0 && index < savedPokes.length) {
+			savedPokes[index].name = newPokeName;
 
-		const savedIndex = savedPokes.findIndex((pokemon) => pokemon.pokeID === pokeArray.pokeID);
-		if (savedIndex !== -1) {
-			savedPokes[savedIndex].name = newPokeName;
+			savedPokes[index].pokeTypeID = newPokeType;
 
-			savedPokes[savedIndex].pokeTypeID = newPokeType;
+			savedPokes[index].type = typeInfo.find((type) => type.id === newPokeType).name;
 
-			const typeName = typeInfo.find((type) => type.id === newPokeType).name;
-			savedPokes[savedIndex].type = typeName;
+			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 		} else {
-			console.error("Pokémonen er funnet, men den har fått et nytt index nummer.");
+			console.error("Finner ikke index.");
 		}
-		updateSavedPokemons();
 	} else {
-		alert("Ikke gyldig nummer. Vennligst velg et tall mellom 1-18.");
+		alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
 	}
+	updateSavedPokemons();
 }
