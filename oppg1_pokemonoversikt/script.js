@@ -42,7 +42,7 @@ async function gottaCatchEmAll() {
 	}
 }
 
-async function getPokeData(pokeNames) {
+async function getPokeData(pokeNames, index) {
 	try {
 		for (const name of pokeNames) {
 			if (name.split("-").length > 1) {
@@ -62,9 +62,9 @@ async function getPokeData(pokeNames) {
 			pokeArray.push({ sprite, name, type, pokeID, pokeTypeID });
 		}
 
-		createMasterballs();
+		createMasterballs(index);
 
-		return pokeArray;
+		return pokeArray[index];
 	} catch (error) {
 		console.error("getPokeData 404", error);
 		throw error;
@@ -72,7 +72,7 @@ async function getPokeData(pokeNames) {
 }
 
 gottaCatchEmAll().then((pokeNames) => {
-	getPokeData(pokeNames)
+	getPokeData(pokeNames, 0)
 		.then((result) => {
 			console.log("getPokeData result", result);
 		})
@@ -84,7 +84,7 @@ gottaCatchEmAll().then((pokeNames) => {
 // Create pokémon-cards
 function createMasterballs() {
 	const maxFifty = pokeArray.slice(0, 50);
-	maxFifty.forEach((pokemon, index) => {
+	maxFifty.forEach((pokemon, masterballIndex) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeId = pokemon.pokeTypeID;
@@ -112,9 +112,9 @@ function createMasterballs() {
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
 
-		const saveBtn = createSaveBtn(index);
-		const deleteBtn = createDeleteBtn(index);
-		const editBtn = createEditBtn(index);
+		const saveBtn = createSaveBtn(masterballIndex);
+		const deleteBtn = createDeleteBtn(masterballIndex);
+		const editBtn = createEditBtn(masterballIndex);
 
 		pokecard.append(sprite, name, typeName, id);
 		btnContainer.append(saveBtn, deleteBtn, editBtn);
@@ -333,17 +333,22 @@ function editPokemon(index) {
 
 	if (newPokeName && newPokeType >= 1 && newPokeType <= 18) {
 		pokeArray[index].name = newPokeName;
+
 		pokeArray[index].pokeTypeID = newPokeType;
+
+		const typeName = typeInfo.find((type) => type.id === newPokeType).name;
+		pokeArray[index].type = typeName;
 
 		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 
 		const savedIndex = savedPokes.findIndex((pokemon) => pokemon.pokeID === pokeArray[index].pokeID);
 
 		if (savedIndex !== -1) {
-			const typeName = typeInfo.find((type) => type.id === newPokeType).name;
-
 			savedPokes[savedIndex].name = newPokeName;
+
 			savedPokes[savedIndex].pokeTypeID = newPokeType;
+
+			const typeName = typeInfo.find((type) => type.id === newPokeType).name;
 			savedPokes[savedIndex].type = typeName;
 		} else {
 			console.error("Pokémonen er funnet, men den har fått et nytt index nummer.");
@@ -353,3 +358,73 @@ function editPokemon(index) {
 		alert("Ikke gyldig nummer. Vennligst velg et tall mellom 1-18.");
 	}
 }
+
+/*
+
+function createEditBtn(index) {
+    const editBtn = document.createElement("button");
+    editBtn.classList.add("edit-btn");
+    editBtn.innerHTML = "EDIT";
+
+    editBtn.addEventListener("click", function () {
+        editPokemon(index); // Pass the correct index here
+    });
+
+    return editBtn;
+}
+
+// Global variable
+let pokeArray = [];
+// Other global variables...
+
+// Fetch API and data about each pokémon in Gen I, II, III and IV
+async function gottaCatchEmAll() {
+    try {
+        // Fetching data...
+    } catch (error) {
+        console.error("Oh no, the Pokémons broke free!", error);
+    }
+}
+
+async function getPokeData(pokeNames, index) {
+    try {
+        // Fetching data...
+        createMasterballs(index); // Pass the index here
+        return pokeArray[index];
+    } catch (error) {
+        console.error("getPokeData 404", error);
+        throw error;
+    }
+}
+
+gottaCatchEmAll().then((pokeNames) => {
+    getPokeData(pokeNames, 0) // Pass the index here
+        .then((result) => {
+            console.log("getPokeData result", result);
+        })
+        .catch((error) => {
+            console.error("call gottaCatchEmAll 404", error);
+        });
+});
+
+// Create pokémon-cards
+function createMasterballs(index) {
+    // Function implementation...
+}
+
+function createMasterballs(index) {
+    const maxFifty = pokeArray.slice(0, 50);
+    maxFifty.forEach((pokemon, currentIndex) => {
+        // Use currentIndex instead of index inside this loop
+        const masterball = document.createElement("div");
+        masterball.classList.add("masterball");
+        masterball.dataset.typeId = pokemon.pokeTypeID;
+
+        // Rest of your code...
+    });
+    // Rest of your code...
+}
+
+
+
+*/
