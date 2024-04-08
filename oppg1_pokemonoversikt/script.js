@@ -329,15 +329,22 @@ function createEditBtn(index) {
 
 function editPokemon(index) {
 	const newPokeName = prompt("Gi Pokémonen et kallenavn!");
-	const newPokeType = parseInt(prompt("Her kan du endre type. Skriv inn et tall fra 1-18."));
+	const newPokeType = parseInt(prompt("Skriv inn et tall fra 1-18 for å endre Pokémonen's type."));
 
-	pokeArray[index].name = newPokeName;
-	pokeArray[index].pokeTypeID = newPokeType;
+	if (newPokeName && newPokeType >= 1 && newPokeType <= 18) {
+		pokeArray[index].name = newPokeName;
+		pokeArray[index].pokeTypeID = newPokeType;
 
-	savedPokes[index].name = newPokeName;
-	savedPokes[index].pokeTypeID = newPokeType;
+		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 
-	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-
-	updateSavedPokemons();
+		if (savedPokes[index]) {
+			savedPokes[index].name = newPokeName;
+			savedPokes[index].pokeTypeID = newPokeType;
+		} else {
+			console.error("Pokémonen er funnet, men den har fått et nyt index nummer.");
+		}
+		updateSavedPokemons();
+	} else {
+		alert("Ikke gyldig nummer. Vennligst velg et tall mellom 1-18.");
+	}
 }
