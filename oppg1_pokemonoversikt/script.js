@@ -374,3 +374,5 @@ function editPokemon(index) {
 		alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
 	}
 }
+
+// Create your own
