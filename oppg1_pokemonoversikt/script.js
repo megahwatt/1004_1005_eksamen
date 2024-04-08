@@ -82,6 +82,68 @@ gottaCatchEmAll().then((pokeNames) => {
 		});
 });
 
+// Filter and styling by typeID
+const typeInfo = [
+	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
+	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
+	{ id: 2, name: "Fighting", light: "#ffc53a", dark: "#fa7d00" },
+	{ id: 3, name: "Flying", light: "#bad9f7", dark: "#7eb5e6" },
+	{ id: 4, name: "Poison", light: "#cb7ce6", dark: "#8c3ec3" },
+	{ id: 5, name: "Ground", light: "#ce925a", dark: "#8c4e1e" },
+	{ id: 6, name: "Rock", light: "#d9d5c3", dark: "#ada57b" },
+	{ id: 7, name: "Bug", light: "#cbd452", dark: "#8c9d19" },
+	{ id: 8, name: "Ghost", light: "#b27cb2", dark: "#6e3e6b" },
+	{ id: 9, name: "Steel", light: "#9accd6", dark: "#5d9db2" },
+	{ id: 10, name: "Fire", light: "#f76868", dark: "#de2626" },
+	{ id: 11, name: "Water", light: "#63c0f7", dark: "#267de6" },
+	{ id: 12, name: "Grass", light: "#7ed263", dark: "#3f9d26" },
+	{ id: 13, name: "Electric", light: "#fce03a", dark: "#f4bc00" },
+	{ id: 14, name: "Psychic", light: "#f780ba", dark: "#e9457b" },
+	{ id: 15, name: "Ice", light: "#7bebff", dark: "#3fd2f4" },
+	{ id: 16, name: "Dragon", light: "#8c9eef", dark: "#505ed6" },
+	{ id: 17, name: "Dark", light: "#8f7c7e", dark: "#503e3c" },
+	{ id: 18, name: "Fairy", light: "#f7a9f7", dark: "#ec6de6" },
+];
+
+function refreshPokes() {
+	window.location.reload();
+}
+
+filterBtns.forEach((img) => {
+	img.addEventListener("click", filterClick);
+});
+
+function filterByType(selectedType) {
+	masterballs.forEach((masterball) => {
+		const typeID = parseInt(masterball.dataset.typeId);
+		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
+		const sprite = masterball.querySelector(".sprite");
+
+		masterball.style.display = selectedType === "" || typeID === parseInt(selectedType) ? "block" : "none";
+
+		if (selectedType === "") {
+			sprite.style.backgroundColor = "transparent";
+			buttons.forEach((button) => {
+				button.style.backgroundColor = "transparent";
+			});
+		} else {
+			sprite.style.backgroundColor = typeInfo[typeID].dark;
+			buttons.forEach((button) => {
+				button.style.backgroundColor = typeInfo[typeID].light;
+			});
+		}
+	});
+}
+
+function filterClick(event) {
+	selectedType = event.currentTarget.getAttribute("data-type");
+	if (selectedType === "") {
+		refreshPokes();
+	} else {
+		filterByType(selectedType);
+	}
+}
+
 // Create pokémon-cards
 function createMasterballs() {
 	const maxFifty = pokeArray.slice(0, 50);
@@ -128,66 +190,6 @@ function createMasterballs() {
 	filterByType("");
 }
 createMasterballs();
-
-// Filter and styling by typeID
-const typeInfo = [
-	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
-	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
-	{ id: 2, name: "Fighting", light: "#ffc53a", dark: "#fa7d00" },
-	{ id: 3, name: "Flying", light: "#bad9f7", dark: "#7eb5e6" },
-	{ id: 4, name: "Poison", light: "#cb7ce6", dark: "#8c3ec3" },
-	{ id: 5, name: "Ground", light: "#ce925a", dark: "#8c4e1e" },
-	{ id: 6, name: "Rock", light: "#d9d5c3", dark: "#ada57b" },
-	{ id: 7, name: "Bug", light: "#cbd452", dark: "#8c9d19" },
-	{ id: 8, name: "Ghost", light: "#b27cb2", dark: "#6e3e6b" },
-	{ id: 9, name: "Steel", light: "#9accd6", dark: "#5d9db2" },
-	{ id: 10, name: "Fire", light: "#f76868", dark: "#de2626" },
-	{ id: 11, name: "Water", light: "#63c0f7", dark: "#267de6" },
-	{ id: 12, name: "Grass", light: "#7ed263", dark: "#3f9d26" },
-	{ id: 13, name: "Electric", light: "#fce03a", dark: "#f4bc00" },
-	{ id: 14, name: "Psychic", light: "#f780ba", dark: "#e9457b" },
-	{ id: 15, name: "Ice", light: "#7bebff", dark: "#3fd2f4" },
-	{ id: 16, name: "Dragon", light: "#8c9eef", dark: "#505ed6" },
-	{ id: 17, name: "Dark", light: "#8f7c7e", dark: "#503e3c" },
-	{ id: 18, name: "Fairy", light: "#f7a9f7", dark: "#ec6de6" },
-];
-
-function refreshPokes() {
-	window.location.reload();
-}
-
-filterBtns.forEach((img) => {
-	img.addEventListener("click", filterClick);
-});
-
-function filterByType(selectedType) {
-	masterballs.forEach((masterball) => {
-		const typeID = parseInt(masterball.dataset.typeId);
-		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
-
-		masterball.style.display = selectedType === "" || typeID === parseInt(selectedType) ? "block" : "none";
-
-		if (selectedType === "") {
-			masterball.querySelector(".sprite").style.backgroundColor = "transparent";
-			buttons.forEach((button) => {
-				button.style.backgroundColor = "transparent";
-			});
-		} else typeID;
-		masterball.querySelector(".sprite").style.backgroundColor = typeInfo[typeID].dark;
-		buttons.forEach((button) => {
-			button.style.backgroundColor = typeInfo[typeID].light;
-		});
-	});
-}
-
-function filterClick(event) {
-	selectedType = event.currentTarget.getAttribute("data-type");
-	if (selectedType === "") {
-		refreshPokes();
-	} else {
-		filterByType(selectedType);
-	}
-}
 
 // Save Pokémons to array and local storage
 const caughtPokes = document.querySelector(".caught-pokes");
@@ -333,10 +335,16 @@ function updateShownPokes(index, newPokeName, newPokeType) {
 function applyEdits(index, newPokeName, newPokeType) {
 	if (masterballs && index >= 0 && index < masterballs.length) {
 		const name = masterballs[index].querySelector(".name");
+		const sprite = masterballs[index].querySelector(".sprite");
 		const typeName = masterballs[index].querySelector(".type-name");
+		const buttons = masterballs[index].querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 
 		name.innerHTML = newPokeName;
-		typeName.innerHTML = typeInfo.find((type) => type.id === newPokeType)?.name || "";
+		typeName.innerHTML = typeInfo.find((type) => type.id === newPokeType).name;
+		sprite.style.backgroundColor = typeInfo[newPokeType].dark;
+		buttons.forEach((button) => {
+			button.style.backgroundColor = typeInfo[newPokeType].light;
+		});
 	} else {
 		console.error("Arrayet er tomt./Finner ikke index.");
 	}
