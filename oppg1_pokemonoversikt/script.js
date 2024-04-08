@@ -81,15 +81,6 @@ gottaCatchEmAll().then((pokeNames) => {
 		});
 });
 
-// Buttons
-function createEditBtn(index) {
-	const editBtn = document.createElement("button");
-	editBtn.classList.add("edit-btn");
-	editBtn.innerHTML = "EDIT";
-
-	return editBtn;
-}
-
 // Create pokémon-cards
 function createMasterballs() {
 	const maxFifty = pokeArray.slice(0, 50);
@@ -138,6 +129,7 @@ function createMasterballs() {
 createMasterballs();
 
 // Filter and styling by typeID
+/*
 const typeColours = [
 	{ light: "transparent", dark: "transparent" }, // all
 	{ light: "#d0d1d0", dark: "#9c9d9a" }, // normal
@@ -158,6 +150,29 @@ const typeColours = [
 	{ light: "#8c9eef", dark: "#505ed6" }, // dragon
 	{ light: "#8f7c7e", dark: "#503e3c" }, // dark
 	{ light: "#f7a9f7", dark: "#ec6de6" }, // fairy
+];
+*/
+
+const typeInfo = [
+	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
+	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
+	{ id: 2, name: "Fighting", light: "#ffc53a", dark: "#fa7d00" },
+	{ id: 3, name: "Flying", light: "#bad9f7", dark: "#7eb5e6" },
+	{ id: 4, name: "Poison", light: "#cb7ce6", dark: "#8c3ec3" },
+	{ id: 5, name: "Ground", light: "#ce925a", dark: "#8c4e1e" },
+	{ id: 6, name: "Rock", light: "#d9d5c3", dark: "#ada57b" },
+	{ id: 7, name: "Bug", light: "#cbd452", dark: "#8c9d19" },
+	{ id: 8, name: "Ghost", light: "#b27cb2", dark: "#6e3e6b" },
+	{ id: 9, name: "Steel", light: "#9accd6", dark: "#5d9db2" },
+	{ id: 10, name: "Fire", light: "#f76868", dark: "#de2626" },
+	{ id: 11, name: "Water", light: "#63c0f7", dark: "#267de6" },
+	{ id: 12, name: "Grass", light: "#7ed263", dark: "#3f9d26" },
+	{ id: 13, name: "Electric", light: "#fce03a", dark: "#f4bc00" },
+	{ id: 14, name: "Psychic", light: "#f780ba", dark: "#e9457b" },
+	{ id: 15, name: "Ice", light: "#7bebff", dark: "#3fd2f4" },
+	{ id: 16, name: "Dragon", light: "#8c9eef", dark: "#505ed6" },
+	{ id: 17, name: "Dark", light: "#8f7c7e", dark: "#503e3c" },
+	{ id: 18, name: "Fairy", light: "#f7a9f7", dark: "#ec6de6" },
 ];
 
 function refreshPokes() {
@@ -318,5 +333,33 @@ function releasePokemon(index) {
 	}
 
 	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+	updateSavedPokemons();
+}
+
+// Edit
+function createEditBtn(index) {
+	const editBtn = document.createElement("button");
+	editBtn.classList.add("edit-btn");
+	editBtn.innerHTML = "EDIT";
+
+	editBtn.addEventListener("click", function () {
+		editPokemon(index);
+	});
+
+	return editBtn;
+}
+
+function editPokemon(index) {
+	const newPokeName = prompt("Gi Pokémonen et kallenavn!");
+	const newPokeType = parseInt(prompt("Her kan du endre type. Skriv inn et tall fra 1-18."));
+
+	pokeArray[index].name = newPokeName;
+	pokeArray[index].pokeTypeID = newPokeType;
+
+	savedPokes[index].name = newPokeName;
+	savedPokes[index].pokeTypeID = newPokeType;
+
+	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+
 	updateSavedPokemons();
 }
