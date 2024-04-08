@@ -241,11 +241,11 @@ function catchPokemon(index) {
 	}
 }
 
-function updateSavedPokemons(index) {
+function updateSavedPokemons() {
 	caughtPokes.innerHTML = "";
 	const savedPokeList = JSON.parse(localStorage.getItem("savedPokes")) || [];
 
-	savedPokeList.forEach((pokemon) => {
+	savedPokeList.forEach((pokemon, index, masterballIndex) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeId = pokemon.pokeTypeID;
@@ -274,10 +274,10 @@ function updateSavedPokemons(index) {
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
 
-		const deleteBtn = createDeleteBtn(index);
+		const deleteBtn = createDeleteBtn(index, masterballIndex);
 		deleteBtn.style.backgroundColor = typeInfo[pokemon.pokeTypeID].light;
 
-		const editBtn = createEditBtn(index);
+		const editBtn = createEditBtn(index, masterballIndex);
 		editBtn.style.backgroundColor = typeInfo[pokemon.pokeTypeID].light;
 
 		pokecard.append(sprite, name, typeName, id);
@@ -290,22 +290,22 @@ function updateSavedPokemons(index) {
 }
 
 // Delete
-function createDeleteBtn(index) {
+function createDeleteBtn(index, masterballIndex) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
 	deleteBtn.innerHTML = "DELETE";
 
 	deleteBtn.addEventListener("click", function () {
-		releasePokemon(index);
+		releasePokemon(index, masterballIndex);
 	});
 	return deleteBtn;
 }
 
-function releasePokemon(index) {
-	pokeArray.splice(index, 1);
-	savedPokes.splice(index, 1);
+function releasePokemon(index, masterballIndex) {
+	pokeArray.splice(index, masterballIndex, 1);
+	savedPokes.splice(index, masterballIndex, 1);
 
-	const releaseMasterball = masterballs[index];
+	const releaseMasterball = masterballs[(index, masterballIndex)];
 	if (releaseMasterball && releaseMasterball.parentNode) {
 		releaseMasterball.parentNode.removeChild(releaseMasterball);
 	}
@@ -315,13 +315,13 @@ function releasePokemon(index) {
 }
 
 // Edit
-function createEditBtn(index) {
+function createEditBtn(index, masterballIndex) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
 	editBtn.innerHTML = "EDIT";
 
 	editBtn.addEventListener("click", function () {
-		editPokemon(index);
+		editPokemon(index, masterballIndex);
 	});
 
 	return editBtn;
@@ -358,73 +358,3 @@ function editPokemon(index) {
 		alert("Ikke gyldig nummer. Vennligst velg et tall mellom 1-18.");
 	}
 }
-
-/*
-
-function createEditBtn(index) {
-    const editBtn = document.createElement("button");
-    editBtn.classList.add("edit-btn");
-    editBtn.innerHTML = "EDIT";
-
-    editBtn.addEventListener("click", function () {
-        editPokemon(index); // Pass the correct index here
-    });
-
-    return editBtn;
-}
-
-// Global variable
-let pokeArray = [];
-// Other global variables...
-
-// Fetch API and data about each pokémon in Gen I, II, III and IV
-async function gottaCatchEmAll() {
-    try {
-        // Fetching data...
-    } catch (error) {
-        console.error("Oh no, the Pokémons broke free!", error);
-    }
-}
-
-async function getPokeData(pokeNames, index) {
-    try {
-        // Fetching data...
-        createMasterballs(index); // Pass the index here
-        return pokeArray[index];
-    } catch (error) {
-        console.error("getPokeData 404", error);
-        throw error;
-    }
-}
-
-gottaCatchEmAll().then((pokeNames) => {
-    getPokeData(pokeNames, 0) // Pass the index here
-        .then((result) => {
-            console.log("getPokeData result", result);
-        })
-        .catch((error) => {
-            console.error("call gottaCatchEmAll 404", error);
-        });
-});
-
-// Create pokémon-cards
-function createMasterballs(index) {
-    // Function implementation...
-}
-
-function createMasterballs(index) {
-    const maxFifty = pokeArray.slice(0, 50);
-    maxFifty.forEach((pokemon, currentIndex) => {
-        // Use currentIndex instead of index inside this loop
-        const masterball = document.createElement("div");
-        masterball.classList.add("masterball");
-        masterball.dataset.typeId = pokemon.pokeTypeID;
-
-        // Rest of your code...
-    });
-    // Rest of your code...
-}
-
-
-
-*/
