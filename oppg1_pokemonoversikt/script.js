@@ -129,30 +129,6 @@ function createMasterballs() {
 createMasterballs();
 
 // Filter and styling by typeID
-/*
-const typeColours = [
-	{ light: "transparent", dark: "transparent" }, // all
-	{ light: "#d0d1d0", dark: "#9c9d9a" }, // normal
-	{ light: "#ffc53a", dark: "#fa7d00" }, // fighting
-	{ light: "#bad9f7", dark: "#7eb5e6" }, // flying
-	{ light: "#cb7ce6", dark: "#8c3ec3" }, // poison
-	{ light: "#ce925a", dark: "#8c4e1e" }, // ground
-	{ light: "#d9d5c3", dark: "#ada57b" }, // rock
-	{ light: "#cbd452", dark: "#8c9d19" }, // bug
-	{ light: "#b27cb2", dark: "#6e3e6b" }, // ghost
-	{ light: "#9accd6", dark: "#5d9db2" }, // steel
-	{ light: "#f76868", dark: "#de2626" }, // fire
-	{ light: "#63c0f7", dark: "#267de6" }, // water
-	{ light: "#7ed263", dark: "#3f9d26" }, // grass
-	{ light: "#fce03a", dark: "#f4bc00" }, // electric
-	{ light: "#f780ba", dark: "#e9457b" }, // psychic
-	{ light: "#7bebff", dark: "#3fd2f4" }, // ice
-	{ light: "#8c9eef", dark: "#505ed6" }, // dragon
-	{ light: "#8f7c7e", dark: "#503e3c" }, // dark
-	{ light: "#f7a9f7", dark: "#ec6de6" }, // fairy
-];
-*/
-
 const typeInfo = [
 	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
 	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
@@ -185,7 +161,7 @@ filterBtns.forEach((img) => {
 
 function filterByType(selectedType) {
 	masterballs.forEach((masterball) => {
-		const typeID = masterball.dataset.typeId;
+		const typeID = parseInt(masterball.dataset.typeId);
 		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 
 		masterball.style.display = selectedType === "" || typeID === selectedType ? "block" : "none";
@@ -196,10 +172,12 @@ function filterByType(selectedType) {
 				button.style.backgroundColor = "transparent";
 			});
 		} else {
-			masterball.querySelector(".sprite").style.backgroundColor = typeColours[typeID].dark;
-			buttons.forEach((button) => {
-				button.style.backgroundColor = typeColours[typeID].light;
-			});
+			if (typeID) {
+				masterball.querySelector(".sprite").style.backgroundColor = typeInfo[typeID].dark;
+				buttons.forEach((button) => {
+					button.style.backgroundColor = typeInfo[typeID].light;
+				});
+			}
 		}
 	});
 }
@@ -279,7 +257,7 @@ function updateSavedPokemons(index) {
 		sprite.classList.add("sprite");
 		sprite.src = pokemon.sprite;
 		sprite.alt = `The official artwork of ${pokemon.name}`;
-		sprite.style.backgroundColor = typeColours[pokemon.pokeTypeID].dark;
+		sprite.style.backgroundColor = typeInfo[pokemon.pokeTypeID].dark;
 
 		const name = document.createElement("div");
 		name.classList.add("name");
@@ -297,10 +275,10 @@ function updateSavedPokemons(index) {
 		btnContainer.classList.add("btn-container");
 
 		const deleteBtn = createDeleteBtn(index);
-		deleteBtn.style.backgroundColor = typeColours[pokemon.pokeTypeID].light;
+		deleteBtn.style.backgroundColor = typeInfo[pokemon.pokeTypeID].light;
 
 		const editBtn = createEditBtn(index);
-		editBtn.style.backgroundColor = typeColours[pokemon.pokeTypeID].light;
+		editBtn.style.backgroundColor = typeInfo[pokemon.pokeTypeID].light;
 
 		pokecard.append(sprite, name, typeName, id);
 		btnContainer.append(deleteBtn, editBtn);
