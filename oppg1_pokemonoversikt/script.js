@@ -1,9 +1,10 @@
 // Global variables
 let pokeArray = [];
 const pokeNames = [];
+let savedPokes = [];
+
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
-let savedPokes = [];
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
 /*
@@ -323,7 +324,7 @@ function createEditBtn(index) {
 
 	return editBtn;
 }
-
+/*
 function editPokemon(index) {
 	const newPokeName = prompt("Gi Pokémonen et kallenavn!");
 	const newPokeType = parseInt(prompt("Skriv inn et tall fra 1-18 for å endre Pokémonen's type."));
@@ -352,4 +353,11 @@ function editPokemon(index) {
 		alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
 	}
 	updateSavedPokemons();
+	updateShownPokes(index, newPokeName, newPokeType);
 }
+
+function updateShownPokes(index, newPokeName, newPokeType) {
+	masterballs[index].querySelector(".name").innerHTML = newPokeName;
+	masterballs[index].querySelector(".type-name").innerHTML = typeInfo.find((type) => type.id === newPokeType).name;
+}
+*/
