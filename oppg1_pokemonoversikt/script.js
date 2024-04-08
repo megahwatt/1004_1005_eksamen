@@ -376,6 +376,57 @@ function editPokemon(index) {
 }
 
 // Create your own
+function fetchEasteregg() {
+	const eastereggs = [
+		{ name: "img1", path: "assets/eastereggs/01_agumon.webp" },
+		{ name: "img2", path: "assets/eastereggs/02_gabumon.webp" },
+		{ name: "img3", path: "assets/eastereggs/03_biyomon.webp" },
+		{ name: "img4", path: "assets/eastereggs/04_tentomon.webp" },
+		{ name: "img5", path: "assets/eastereggs/05_palmon.webp" },
+		{ name: "img6", path: "assets/eastereggs/06_gomamon.webp" },
+		{ name: "img7", path: "assets/eastereggs/07_patamon.webp" },
+		{ name: "img8", path: "assets/eastereggs/08_gatomon.webp" },
+	];
+
+	const randomIndex = Math.floor(Math.random() * eastereggs.length);
+	return eastereggs[randomIndex].path;
+}
+
+function assemblePokemon() {
+	const eastereggSprite = fetchEasteregg();
+	const yourPokeName = document.querySelector("#your-poke-name").value;
+	const typeSelector = document.querySelector("#type-selector").value;
+
+	return {
+		eastereggSprite,
+		yourPokeName,
+		typeSelector,
+	};
+}
+
+function createPokemon() {
+	const yourPokemon = assemblePokemon();
+
+	pokeArray.unshift({
+		eastereggSprite: yourPokemon.eastereggSprite,
+		yourPokeName: yourPokemon.yourPokeName,
+		typeSelector: yourPokemon.typeSelector,
+	});
+	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+}
+
+function createPokemonBtn() {
+	document.querySelector("#create-btn").addEventListener("click", createPokemon);
+	console.log("button clicked");
+
+	document.addEventListener("keydown", function (event) {
+		if (event.key === "Enter") {
+			createPokemon();
+		}
+	});
+	console.log("enter clicked");
+}
+
 /*
 function fetchEasteregg() {
 	const eastereggs = [
