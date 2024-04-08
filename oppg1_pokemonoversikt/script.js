@@ -164,7 +164,7 @@ function filterByType(selectedType) {
 		const typeID = parseInt(masterball.dataset.typeId);
 		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 
-		masterball.style.display = selectedType === "" || typeID === selectedType ? "block" : "none";
+		masterball.style.display = selectedType === "" || typeID === parseInt(selectedType) ? "block" : "none";
 
 		if (selectedType === "") {
 			masterball.querySelector(".sprite").style.backgroundColor = "transparent";
@@ -265,7 +265,7 @@ function updateSavedPokemons(index) {
 
 		const typeName = document.createElement("div");
 		typeName.classList.add("type-name");
-		typeName.innerHTML = pokemon.type;
+		typeName.innerHTML = typeInfo[pokemon.pokeTypeID].name;
 
 		const id = document.createElement("div");
 		id.classList.add("id");
@@ -337,11 +337,16 @@ function editPokemon(index) {
 
 		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 
-		if (savedPokes[index]) {
-			savedPokes[index].name = newPokeName;
-			savedPokes[index].pokeTypeID = newPokeType;
+		const savedIndex = savedPokes.findIndex((pokemon) => pokemon.pokeID === pokeArray[index].pokeID);
+
+		if (savedIndex !== -1) {
+			const typeName = typeInfo.find((type) => type.id === newPokeType).name;
+
+			savedPokes[savedIndex].name = newPokeName;
+			savedPokes[savedIndex].pokeTypeID = newPokeType;
+			savedPokes[savedIndex].type = typeName;
 		} else {
-			console.error("Pokémonen er funnet, men den har fått et nyt index nummer.");
+			console.error("Pokémonen er funnet, men den har fått et nytt index nummer.");
 		}
 		updateSavedPokemons();
 	} else {
