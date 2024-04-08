@@ -42,7 +42,7 @@ async function gottaCatchEmAll() {
 	}
 }
 
-async function getPokeData(pokeNames, index) {
+async function getPokeData(pokeNames) {
 	try {
 		for (const name of pokeNames) {
 			if (name.split("-").length > 1) {
@@ -62,9 +62,9 @@ async function getPokeData(pokeNames, index) {
 			pokeArray.push({ sprite, name, type, pokeID, pokeTypeID });
 		}
 
-		createMasterballs(index);
+		createMasterballs();
 
-		return pokeArray[index];
+		return pokeArray;
 	} catch (error) {
 		console.error("getPokeData 404", error);
 		throw error;
@@ -72,7 +72,7 @@ async function getPokeData(pokeNames, index) {
 }
 
 gottaCatchEmAll().then((pokeNames) => {
-	getPokeData(pokeNames, 0)
+	getPokeData(pokeNames)
 		.then((result) => {
 			console.log("getPokeData result", result);
 		})
@@ -84,7 +84,7 @@ gottaCatchEmAll().then((pokeNames) => {
 // Create pokémon-cards
 function createMasterballs() {
 	const maxFifty = pokeArray.slice(0, 50);
-	maxFifty.forEach((pokemon, masterballIndex) => {
+	maxFifty.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeId = pokemon.pokeTypeID;
@@ -112,9 +112,9 @@ function createMasterballs() {
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
 
-		const saveBtn = createSaveBtn(masterballIndex);
-		const deleteBtn = createDeleteBtn(masterballIndex);
-		const editBtn = createEditBtn(masterballIndex);
+		const saveBtn = createSaveBtn(index);
+		const deleteBtn = createDeleteBtn(index);
+		const editBtn = createEditBtn(index);
 
 		pokecard.append(sprite, name, typeName, id);
 		btnContainer.append(saveBtn, deleteBtn, editBtn);
@@ -171,14 +171,11 @@ function filterByType(selectedType) {
 			buttons.forEach((button) => {
 				button.style.backgroundColor = "transparent";
 			});
-		} else {
-			if (typeID) {
-				masterball.querySelector(".sprite").style.backgroundColor = typeInfo[typeID].dark;
-				buttons.forEach((button) => {
-					button.style.backgroundColor = typeInfo[typeID].light;
-				});
-			}
-		}
+		} else typeID;
+		masterball.querySelector(".sprite").style.backgroundColor = typeInfo[typeID].dark;
+		buttons.forEach((button) => {
+			button.style.backgroundColor = typeInfo[typeID].light;
+		});
 	});
 }
 
@@ -241,11 +238,11 @@ function catchPokemon(index) {
 	}
 }
 
-function updateSavedPokemons() {
+function updateSavedPokemons(index) {
 	caughtPokes.innerHTML = "";
 	const savedPokeList = JSON.parse(localStorage.getItem("savedPokes")) || [];
 
-	savedPokeList.forEach((pokemon, index, masterballIndex) => {
+	savedPokeList.forEach((pokemon) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeId = pokemon.pokeTypeID;
@@ -274,10 +271,10 @@ function updateSavedPokemons() {
 		const btnContainer = document.createElement("div");
 		btnContainer.classList.add("btn-container");
 
-		const deleteBtn = createDeleteBtn(index, masterballIndex);
+		const deleteBtn = createDeleteBtn(index);
 		deleteBtn.style.backgroundColor = typeInfo[pokemon.pokeTypeID].light;
 
-		const editBtn = createEditBtn(index, masterballIndex);
+		const editBtn = createEditBtn(index);
 		editBtn.style.backgroundColor = typeInfo[pokemon.pokeTypeID].light;
 
 		pokecard.append(sprite, name, typeName, id);
@@ -290,22 +287,22 @@ function updateSavedPokemons() {
 }
 
 // Delete
-function createDeleteBtn(index, masterballIndex) {
+function createDeleteBtn(index) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
 	deleteBtn.innerHTML = "DELETE";
 
 	deleteBtn.addEventListener("click", function () {
-		releasePokemon(index, masterballIndex);
+		releasePokemon(index);
 	});
 	return deleteBtn;
 }
 
-function releasePokemon(index, masterballIndex) {
-	pokeArray.splice(index, masterballIndex, 1);
-	savedPokes.splice(index, masterballIndex, 1);
+function releasePokemon(index) {
+	pokeArray.splice(index, 1);
+	savedPokes.splice(index, 1);
 
-	const releaseMasterball = masterballs[(index, masterballIndex)];
+	const releaseMasterball = masterballs[index];
 	if (releaseMasterball && releaseMasterball.parentNode) {
 		releaseMasterball.parentNode.removeChild(releaseMasterball);
 	}
@@ -315,34 +312,33 @@ function releasePokemon(index, masterballIndex) {
 }
 
 // Edit
-function createEditBtn(index, masterballIndex) {
+function createEditBtn(index) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
 	editBtn.innerHTML = "EDIT";
 
 	editBtn.addEventListener("click", function () {
-		editPokemon(index, masterballIndex);
+		editPokemon(index);
 	});
 
 	return editBtn;
 }
 
-function editPokemon(index) {
+function editPokemon() {
 	const newPokeName = prompt("Gi Pokémonen et kallenavn!");
 	const newPokeType = parseInt(prompt("Skriv inn et tall fra 1-18 for å endre Pokémonen's type."));
 
 	if (newPokeName && newPokeType >= 1 && newPokeType <= 18) {
-		pokeArray[index].name = newPokeName;
+		pokeArray.name = newPokeName;
 
-		pokeArray[index].pokeTypeID = newPokeType;
+		pokeArray.pokeTypeID = newPokeType;
 
 		const typeName = typeInfo.find((type) => type.id === newPokeType).name;
-		pokeArray[index].type = typeName;
+		pokeArray.type = typeName;
 
 		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 
-		const savedIndex = savedPokes.findIndex((pokemon) => pokemon.pokeID === pokeArray[index].pokeID);
-
+		const savedIndex = savedPokes.findIndex((pokemon) => pokemon.pokeID === pokeArray.pokeID);
 		if (savedIndex !== -1) {
 			savedPokes[savedIndex].name = newPokeName;
 
