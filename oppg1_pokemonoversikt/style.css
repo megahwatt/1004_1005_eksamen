@@ -10,7 +10,8 @@ body {
 }
 
 body,
-.caught-pokes {
+.caught-pokes,
+.container {
 	width: 100vw;
 	display: flex;
 	flex-flow: wrap;
@@ -62,7 +63,8 @@ body,
 	justify-content: center;
 }
 
-.masterball {
+.masterball,
+.new-card {
 	display: flex;
 	box-sizing: border-box;
 	width: 150px;
@@ -81,25 +83,30 @@ body,
 	align-items: center;
 }
 
-.sprite {
+.sprite,
+.easteregg-sprite {
 	width: 150px;
 	height: 150px;
 	margin-bottom: 5px;
 }
 
 .name,
+.your-pokename,
 .type-name,
+.your-poketype,
 .id {
 	color: black;
 	text-align: center;
 }
 
-.name {
+.name,
+.your-pokename {
 	font-size: 15px;
 	text-transform: uppercase;
 }
 
 .type-name,
+.your-poketype,
 .id {
 	font-size: 12px;
 }
@@ -138,4 +145,18 @@ body,
 	box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 	font-size: 250px;
 	color: #000000;
+}
+
+h3 {
+	font-size: 20px;
+}
+
+.create-your-own {
+	margin: 25px auto 25px auto;
+}
+
+#type-selector,
+#your-pokename,
+#create-btn {
+	font-size: 15px;
 }
