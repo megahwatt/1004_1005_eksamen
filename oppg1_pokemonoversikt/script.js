@@ -397,32 +397,34 @@ function createPokemonBtn() {
 	const createBtn = document.querySelector("#create-btn");
 
 	createBtn.addEventListener("click", function () {
-		const yourPokeType = document.querySelector("#type-selector").value;
-		createPokemon(yourPokeType);
+		const typeSelector = document.querySelector("#type-selector").value;
+		createPokemon(typeSelector);
 	});
 
 	document.addEventListener("keydown", function (event) {
 		if (event.key === "Enter") {
-			const yourPokeType = document.querySelector("#type-selector").value;
-			createPokemon(yourPokeType);
+			const typeSelector = document.querySelector("#type-selector").value;
+			createPokemon(typeSelector);
 		}
 	});
 }
 createPokemonBtn();
 
-function createPokemon(yourPokeType) {
-	const yourPokemon = { yourPokeType, eastereggSprite: fetchEasteregg() };
+function createPokemon(typeSelector) {
+	const yourPokename = document.querySelector("#your-pokename").value;
+
+	const yourPokemon = { yourPokename, typeSelector, eastereggSprite: fetchEasteregg() };
 
 	pokeArray.push(yourPokemon);
 	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
 
-	assemblePokemon(pokeArray.length - 1, yourPokemon, yourPokeType);
+	assemblePokemon(pokeArray.length - 1, yourPokemon, typeSelector);
 }
 
-function assemblePokemon(index, yourPokemon, yourPokeType) {
+function assemblePokemon(index, yourPokemon, typeSelector) {
 	const newCard = document.createElement("div");
 	newCard.classList.add("new-card");
-	newCard.dataset.typeId = yourPokeType;
+	newCard.dataset.typeId = typeSelector;
 
 	const pokecard = document.createElement("div");
 	pokecard.classList.add("pokecard");
@@ -430,16 +432,16 @@ function assemblePokemon(index, yourPokemon, yourPokeType) {
 	const eastereggSprite = document.createElement("img");
 	eastereggSprite.classList.add("easteregg-sprite");
 	eastereggSprite.src = yourPokemon.eastereggSprite;
-	eastereggSprite.alt = `Sprite of ${yourPokemon.yourPokeName}`;
+	eastereggSprite.alt = `Sprite of ${yourPokemon.yourPokename}`;
 	//eastereggSprite.style.backgroundColor = yourPokeType.typeInfo.dark;
 
-	const yourPokeName = document.createElement("div");
-	yourPokeName.classList.add("your-pokename");
-	yourPokeName.innerHTML = yourPokemon.yourPokeName;
+	const yourPokename = document.createElement("div");
+	yourPokename.classList.add("your-pokename");
+	yourPokename.innerHTML = yourPokemon.yourPokename;
 
-	const yourPokeTypeElement = document.createElement("div");
-	yourPokeTypeElement.classList.add("your-poke-type");
-	//yourPokeTypeElement.innerHTML = typeInfo[yourPokeType].name;
+	const yourPoketype = document.createElement("div");
+	yourPoketype.classList.add("your-poketype");
+	// yourPoketype.innerHTML = typeInfo[yourPokeType].name;
 
 	const btnContainer = document.createElement("div");
 	btnContainer.classList.add("btn-container");
@@ -448,7 +450,7 @@ function assemblePokemon(index, yourPokemon, yourPokeType) {
 	const deleteBtn = createDeleteBtn(index);
 	const editBtn = createEditBtn(index);
 
-	pokecard.append(eastereggSprite, yourPokeName, yourPokeTypeElement, btnContainer);
+	pokecard.append(eastereggSprite, yourPokename, yourPoketype, btnContainer);
 
 	btnContainer.append(saveBtn, deleteBtn, editBtn);
 

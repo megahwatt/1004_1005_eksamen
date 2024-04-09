@@ -63,7 +63,8 @@ body,
 	justify-content: center;
 }
 
-.masterball {
+.masterball,
+.new-card {
 	display: flex;
 	box-sizing: border-box;
 	width: 150px;
@@ -82,25 +83,30 @@ body,
 	align-items: center;
 }
 
-.sprite {
+.sprite,
+.easteregg-sprite {
 	width: 150px;
 	height: 150px;
 	margin-bottom: 5px;
 }
 
 .name,
+.your-pokename,
 .type-name,
+.your-poketype,
 .id {
 	color: black;
 	text-align: center;
 }
 
-.name {
+.name,
+.your-pokename {
 	font-size: 15px;
 	text-transform: uppercase;
 }
 
 .type-name,
+.your-poketype,
 .id {
 	font-size: 12px;
 }
@@ -150,7 +156,7 @@ h3 {
 }
 
 #type-selector,
-#your-poke-name,
+#your-pokename,
 #create-btn {
 	font-size: 15px;
 }
