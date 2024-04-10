@@ -1,4 +1,4 @@
-// Global variables
+// GLOBAL VARIABLES
 let pokeArray = [];
 const pokeNames = [];
 let savedPokes = [];
@@ -83,7 +83,7 @@ gottaCatchEmAll().then((pokeNames) => {
 		});
 });
 
-// Filter and styling by typeID
+// FILTER AND STYLING BY TYPE -- OPPG 1.2
 const typeInfo = [
 	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
 	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
@@ -107,7 +107,13 @@ const typeInfo = [
 ];
 
 function refreshPokes() {
-	window.location.reload();
+	container.innerHTML = "";
+	createMasterballs();
+}
+
+function refreshCaught() {
+	caughtPokes.innerHTML = "";
+	updateSavedPokemons();
 }
 
 filterBtns.forEach((img) => {
@@ -190,9 +196,8 @@ function createMasterballs() {
 	masterballs = document.querySelectorAll(".masterball");
 	filterByType("");
 }
-createMasterballs();
 
-// Save Pokémons to array and local storage
+// SAVE TO ARRAY AND LOCALSTORAGE -- OPPG 1.4
 const caughtPokes = document.querySelector(".caught-pokes");
 
 function createSaveBtn(index) {
@@ -222,20 +227,18 @@ function tooManySaved() {
 function catchPokemon(index) {
 	const selectedPokemon = pokeArray[index];
 
-	const alreadyCaughtThis = savedPokes.some((pokemon) => pokemon.name === selectedPokemon.name);
+	const alreadyCaughtThis = savedPokes.findIndex((savedPoke) => savedPoke.pokeID === selectedPokemon.pokeID) !== -1;
 
 	if (!alreadyCaughtThis) {
 		if (savedPokes.length < 5) {
 			savedPokes.push(selectedPokemon);
+			pokeArray.splice(index, 1);
 			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-
-			const cloakMasterball = masterballs[index];
-			if (cloakMasterball) {
-				cloakMasterball.classList.add("hide");
-			}
+			localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+			refreshPokes();
+			updateSavedPokemons();
 		} else {
 			tooManySaved();
-			console.log("Oh no! You can only carry 5 Pokémons!");
 		}
 	} else {
 		console.log("This Pokémon has already been caught!");
@@ -247,9 +250,9 @@ function updateSavedPokemons(index) {
 	const savedPokeList = JSON.parse(localStorage.getItem("savedPokes")) || [];
 
 	savedPokeList.forEach((pokemon) => {
-		const masterball = document.createElement("div");
-		masterball.classList.add("masterball");
-		masterball.dataset.typeId = pokemon.pokeTypeID;
+		const savedMasterball = document.createElement("div");
+		savedMasterball.classList.add("saved-masterball");
+		savedMasterball.dataset.typeId = pokemon.pokeTypeID;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -284,38 +287,61 @@ function updateSavedPokemons(index) {
 		pokecard.append(sprite, name, typeName, id);
 		btnContainer.append(deleteBtn, editBtn);
 
-		masterball.append(pokecard, btnContainer);
+		savedMasterball.append(pokecard, btnContainer);
 
-		caughtPokes.append(masterball);
+		caughtPokes.append(savedMasterball);
 	});
 }
 
-// Delete
-function createDeleteBtn(index) {
+// DELETE FROM ARRAY AND LOCALSTORAGE -- OPPG 1.5
+function createDeleteBtn() {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
 	deleteBtn.innerHTML = "DELETE";
 
 	deleteBtn.addEventListener("click", function () {
-		releasePokemon(index);
+		const masterball = deleteBtn.closest(".masterball") || deleteBtn.closest(".saved-masterball");
+		if (masterball) {
+			const masterballIndex = Array.from(masterball.parentNode.children).indexOf(masterball);
+			releasePokemon(masterballIndex);
+		} else {
+			console.error("404 parent masterball not found");
+		}
 	});
+
 	return deleteBtn;
 }
 
-function releasePokemon(index) {
-	pokeArray.splice(index, 1);
-	savedPokes.splice(index, 1);
-
-	const releaseMasterball = masterballs[index];
-	if (releaseMasterball && releaseMasterball.parentNode) {
-		releaseMasterball.parentNode.removeChild(releaseMasterball);
-	}
-
-	localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-	updateSavedPokemons();
+function updateAfterDelete() {
+	refreshPokes();
+	refreshCaught();
 }
 
-// Edit
+function releasePokemon(index) {
+	if (index !== undefined && index >= 0 && index < savedPokes.length) {
+		savedPokes.splice(index, 1);
+		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+
+		const savedMasterballDelete = caughtPokes.querySelector(`.saved-masterball:nth-child(${index + 1})`);
+		if (savedMasterballDelete) {
+			savedMasterballDelete.remove();
+		}
+		updateAfterDelete();
+	} else if (index !== undefined && index >= 0 && index < pokeArray.length) {
+		pokeArray.splice(index, 1);
+		localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+
+		const masterballDelete = container.querySelector(`.masterball:nth-child(${index + 1})`);
+		if (masterballDelete) {
+			masterballDelete.remove();
+		}
+		updateAfterDelete();
+	} else {
+		console.error("Invalid index");
+	}
+}
+
+// EDIT MASTERBALLS TO DISPLAY ACROSS THE ENTIRE UI AND LOCALSTORAGE -- OPPG 1.6
 function createEditBtn(index) {
 	const editBtn = document.createElement("button");
 	editBtn.classList.add("edit-btn");
@@ -347,7 +373,7 @@ function applyEdits(index, newPokeName, newPokeType) {
 			button.style.backgroundColor = typeInfo[newPokeType].light;
 		});
 	} else {
-		console.error("Arrayet er tomt./Finner ikke index.");
+		console.error("Empty array/Invalid index");
 	}
 }
 
@@ -369,14 +395,14 @@ function editPokemon(index) {
 			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 			updateShownPokes(index, newPokeName, newPokeType);
 		} else {
-			console.error("Arrayet er tomt./Finner ikke index.");
+			console.error("Empty array/Invalid index");
 		}
 	} else {
 		alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
 	}
 }
 
-// Create your own
+// CREATE YOUR OWN POCKET MONSTER -- OPPG 1.3
 function fetchEasteregg() {
 	const eastereggs = [
 		{ name: "img1", path: "assets/eastereggs/01_agumon.webp" },
@@ -460,3 +486,7 @@ function assemblePokemon(index, yourPokemon, typeSelector) {
 
 	return newCard;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+	refreshPokes();
+});

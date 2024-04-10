@@ -64,6 +64,7 @@ body,
 }
 
 .masterball,
+.saved-masterball,
 .new-card {
 	display: flex;
 	box-sizing: border-box;
