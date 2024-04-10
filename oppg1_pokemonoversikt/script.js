@@ -1,26 +1,21 @@
 // GLOBAL VARIABLES
 let pokeArray = [];
-const pokeNames = [];
-let savedPokes = [];
+let pokeNames = [];
+const savedPokes = [];
 
 const container = document.querySelector(".container");
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
 
 // Fetch API and data about each pokémon in Gen I, II, III and IV
-/*
-Very manual error-handling of the Pokémons that could not be fetched,
-due to issues with the throw error function.
-Proritised the exam as a whole over elegant error handling.
-*/
 async function gottaCatchEmAll() {
 	try {
-		const [dataGenI, dataGenII, dataGenIII, dataGenIV] = await Promise.all([
-			(await fetch("https://pokeapi.co/api/v2/generation/1")).json(),
-			(await fetch("https://pokeapi.co/api/v2/generation/2")).json(),
-			(await fetch("https://pokeapi.co/api/v2/generation/3")).json(),
-			(await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
-		]);
+		const [dataGenI, dataGenII, dataGenIII, dataGenIV] = [
+			await (await fetch("https://pokeapi.co/api/v2/generation/1")).json(),
+			await (await fetch("https://pokeapi.co/api/v2/generation/2")).json(),
+			await (await fetch("https://pokeapi.co/api/v2/generation/3")).json(),
+			await (await fetch("https://pokeapi.co/api/v2/generation/4")).json(),
+		];
 
 		[dataGenI, dataGenII, dataGenIII, dataGenIV].forEach((data) => {
 			data.pokemon_species.forEach((pokemon) => {
@@ -28,10 +23,7 @@ async function gottaCatchEmAll() {
 			});
 		});
 
-		/*
-		Utilizing the Fisher-Yates shuffle algorithm to scramble the Pokémon-generations,
-		so we get a true random selection upon page load instead of Gen I's 1-49.
-		*/
+		// Fisher-Yates algorithm: Scrambles fetched data
 		for (let i = pokeNames.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[pokeNames[i], pokeNames[j]] = [pokeNames[j], pokeNames[i]];
@@ -39,13 +31,16 @@ async function gottaCatchEmAll() {
 
 		console.log("Gotcha! First four generations were caught!");
 		return pokeNames;
-	} catch (error) {
-		console.error("Oh no, the Pokémons broke free!", error);
+	} catch {
+		console.error("404 Oh no, the Pokémons broke free!", error.message);
+		return [];
 	}
 }
+//gottaCatchEmAll();
 
 async function getPokeData(pokeNames) {
 	try {
+		let pokeArray = [];
 		for (const name of pokeNames) {
 			if (name.split("-").length > 1) {
 				continue;
@@ -64,22 +59,24 @@ async function getPokeData(pokeNames) {
 			pokeArray.push({ sprite, name, type, pokeID, pokeTypeID });
 		}
 
-		createMasterballs();
-
 		return pokeArray;
-	} catch (error) {
-		console.error("getPokeData 404", error);
-		throw error;
+	} catch {
+		console.error("404 Calling getPokeData", error.message);
+		return [];
 	}
 }
+//getPokeData(pokeNames);
 
 gottaCatchEmAll().then((pokeNames) => {
 	getPokeData(pokeNames)
 		.then((result) => {
-			console.log("getPokeData result", result);
+			console.log("Log results from getPokeData", result);
+			pokeArray = result;
+			createMasterballs();
 		})
 		.catch((error) => {
-			console.error("call gottaCatchEmAll 404", error);
+			console.error("404 calling gottaCatchEmAll", error.message);
+			return [];
 		});
 });
 
@@ -213,6 +210,11 @@ function createSaveBtn(index) {
 	return saveBtn;
 }
 
+function updateAfterSave() {
+	refreshPokes();
+	updateSavedPokemons();
+}
+
 function tooManySaved() {
 	const alertBubble = document.createElement("div");
 	alertBubble.classList.add("alert-bubble");
@@ -229,19 +231,20 @@ function catchPokemon(index) {
 
 	const alreadyCaughtThis = savedPokes.findIndex((savedPoke) => savedPoke.pokeID === selectedPokemon.pokeID) !== -1;
 
-	if (!alreadyCaughtThis) {
-		if (savedPokes.length < 5) {
-			savedPokes.push(selectedPokemon);
-			pokeArray.splice(index, 1);
-			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-			localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
-			refreshPokes();
-			updateSavedPokemons();
-		} else {
-			tooManySaved();
+	try {
+		if (!alreadyCaughtThis) {
+			if (savedPokes.length < 5) {
+				savedPokes.push(selectedPokemon);
+				pokeArray.splice(index, 1);
+				localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+				localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+				updateAfterSave();
+			} else {
+				tooManySaved();
+			}
 		}
-	} else {
-		console.log("This Pokémon has already been caught!");
+	} catch (error) {
+		console.error("404 This Pokémon has already been caught!", error.message);
 	}
 }
 
@@ -301,11 +304,13 @@ function createDeleteBtn() {
 
 	deleteBtn.addEventListener("click", function () {
 		const masterball = deleteBtn.closest(".masterball") || deleteBtn.closest(".saved-masterball");
-		if (masterball) {
-			const masterballIndex = Array.from(masterball.parentNode.children).indexOf(masterball);
-			releasePokemon(masterballIndex);
-		} else {
-			console.error("404 parent masterball not found");
+		try {
+			if (masterball) {
+				const masterballIndex = Array.from(masterball.parentNode.children).indexOf(masterball);
+				releasePokemon(masterballIndex);
+			}
+		} catch (error) {
+			console.error("404 Parent masterball not found", error.message);
 		}
 	});
 
@@ -318,26 +323,28 @@ function updateAfterDelete() {
 }
 
 function releasePokemon(index) {
-	if (index !== undefined && index >= 0 && index < savedPokes.length) {
-		savedPokes.splice(index, 1);
-		localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+	try {
+		if (index !== undefined && index >= 0 && index < savedPokes.length) {
+			savedPokes.splice(index, 1);
+			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 
-		const savedMasterballDelete = caughtPokes.querySelector(`.saved-masterball:nth-child(${index + 1})`);
-		if (savedMasterballDelete) {
-			savedMasterballDelete.remove();
-		}
-		updateAfterDelete();
-	} else if (index !== undefined && index >= 0 && index < pokeArray.length) {
-		pokeArray.splice(index, 1);
-		localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+			const savedMasterballDelete = caughtPokes.querySelector(`.saved-masterball:nth-child(${index + 1})`);
+			if (savedMasterballDelete) {
+				savedMasterballDelete.remove();
+			}
+			updateAfterDelete();
+		} else if (index !== undefined && index >= 0 && index < pokeArray.length) {
+			pokeArray.splice(index, 1);
+			localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
 
-		const masterballDelete = container.querySelector(`.masterball:nth-child(${index + 1})`);
-		if (masterballDelete) {
-			masterballDelete.remove();
+			const masterballDelete = container.querySelector(`.masterball:nth-child(${index + 1})`);
+			if (masterballDelete) {
+				masterballDelete.remove();
+			}
+			updateAfterDelete();
 		}
-		updateAfterDelete();
-	} else {
-		console.error("Invalid index");
+	} catch (error) {
+		console.error("404 Invalid index", error.message);
 	}
 }
 
@@ -360,133 +367,49 @@ function updateShownPokes(index, newPokeName, newPokeType) {
 }
 
 function applyEdits(index, newPokeName, newPokeType) {
-	if (masterballs && index >= 0 && index < masterballs.length) {
-		const name = masterballs[index].querySelector(".name");
-		const sprite = masterballs[index].querySelector(".sprite");
-		const typeName = masterballs[index].querySelector(".type-name");
-		const buttons = masterballs[index].querySelectorAll(".save-btn, .delete-btn, .edit-btn");
+	try {
+		if (masterballs && index >= 0 && index < masterballs.length) {
+			const name = masterballs[index].querySelector(".name");
+			const sprite = masterballs[index].querySelector(".sprite");
+			const typeName = masterballs[index].querySelector(".type-name");
+			const buttons = masterballs[index].querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 
-		name.innerHTML = newPokeName;
-		typeName.innerHTML = typeInfo.find((type) => type.id === newPokeType).name;
-		sprite.style.backgroundColor = typeInfo[newPokeType].dark;
-		buttons.forEach((button) => {
-			button.style.backgroundColor = typeInfo[newPokeType].light;
-		});
-	} else {
-		console.error("Empty array/Invalid index");
+			name.innerHTML = newPokeName;
+			typeName.innerHTML = typeInfo.find((type) => type.id === newPokeType).name;
+			sprite.style.backgroundColor = typeInfo[newPokeType].dark;
+			buttons.forEach((button) => {
+				button.style.backgroundColor = typeInfo[newPokeType].light;
+			});
+		}
+	} catch (error) {
+		console.error("404 Empty array/Invalid index", error.message);
 	}
 }
 
 function editPokemon(index) {
 	const newPokeName = prompt("Gi Pokémonen et kallenavn!");
 	const newPokeType = parseInt(prompt("Skriv inn et tall fra 1-18 for å endre Pokémonen's type."));
-
-	if (newPokeName && newPokeType >= 1 && newPokeType <= 18) {
-		if (index >= 0 && index < pokeArray.length) {
-			pokeArray[index].name = newPokeName;
-			pokeArray[index].pokeTypeID = newPokeType;
-			pokeArray[index].type = typeInfo.find((type) => type.id === newPokeType).name;
-			localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
-			updateShownPokes(index, newPokeName, newPokeType);
-		} else if (index >= 0 && index < savedPokes.length) {
-			savedPokes[index].name = newPokeName;
-			savedPokes[index].pokeTypeID = newPokeType;
-			savedPokes[index].type = typeInfo.find((type) => type.id === newPokeType).name;
-			localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-			updateShownPokes(index, newPokeName, newPokeType);
-		} else {
-			console.error("Empty array/Invalid index");
+	try {
+		if (newPokeName && newPokeType >= 1 && newPokeType <= 18) {
+			if (index >= 0 && index < pokeArray.length) {
+				pokeArray[index].name = newPokeName;
+				pokeArray[index].pokeTypeID = newPokeType;
+				pokeArray[index].type = typeInfo.find((type) => type.id === newPokeType).name;
+				localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
+				updateShownPokes(index, newPokeName, newPokeType);
+			} else if (index >= 0 && index < savedPokes.length) {
+				savedPokes[index].name = newPokeName;
+				savedPokes[index].pokeTypeID = newPokeType;
+				savedPokes[index].type = typeInfo.find((type) => type.id === newPokeType).name;
+				localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
+				updateShownPokes(index, newPokeName, newPokeType);
+			} else {
+				alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
+			}
 		}
-	} else {
-		alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
+	} catch (error) {
+		console.error("404 Empty array/Invalid index", error.message);
 	}
 }
 
 // CREATE YOUR OWN POCKET MONSTER -- OPPG 1.3
-function fetchEasteregg() {
-	const eastereggs = [
-		{ name: "img1", path: "assets/eastereggs/01_agumon.webp" },
-		{ name: "img2", path: "assets/eastereggs/02_gabumon.webp" },
-		{ name: "img3", path: "assets/eastereggs/03_biyomon.webp" },
-		{ name: "img4", path: "assets/eastereggs/04_tentomon.webp" },
-		{ name: "img5", path: "assets/eastereggs/05_palmon.webp" },
-		{ name: "img6", path: "assets/eastereggs/06_gomamon.webp" },
-		{ name: "img7", path: "assets/eastereggs/07_patamon.webp" },
-		{ name: "img8", path: "assets/eastereggs/08_gatomon.webp" },
-	];
-
-	const randomIndex = Math.floor(Math.random() * eastereggs.length);
-	return eastereggs[randomIndex].path;
-}
-
-function createPokemonBtn() {
-	const createBtn = document.querySelector("#create-btn");
-
-	createBtn.addEventListener("click", function () {
-		const typeSelector = document.querySelector("#type-selector").value;
-		createPokemon(typeSelector);
-	});
-
-	document.addEventListener("keydown", function (event) {
-		if (event.key === "Enter") {
-			const typeSelector = document.querySelector("#type-selector").value;
-			createPokemon(typeSelector);
-		}
-	});
-}
-createPokemonBtn();
-
-function createPokemon(typeSelector) {
-	const yourPokename = document.querySelector("#your-pokename").value;
-
-	const yourPokemon = { yourPokename, typeSelector, eastereggSprite: fetchEasteregg() };
-
-	pokeArray.push(yourPokemon);
-	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
-
-	assemblePokemon(pokeArray.length - 1, yourPokemon, typeSelector);
-}
-
-function assemblePokemon(index, yourPokemon, typeSelector) {
-	const newCard = document.createElement("div");
-	newCard.classList.add("new-card");
-	newCard.dataset.typeId = typeSelector;
-
-	const pokecard = document.createElement("div");
-	pokecard.classList.add("pokecard");
-
-	const eastereggSprite = document.createElement("img");
-	eastereggSprite.classList.add("easteregg-sprite");
-	eastereggSprite.src = yourPokemon.eastereggSprite;
-	eastereggSprite.alt = `Sprite of ${yourPokemon.yourPokename}`;
-	//eastereggSprite.style.backgroundColor = yourPokeType.typeInfo.dark;
-
-	const yourPokename = document.createElement("div");
-	yourPokename.classList.add("your-pokename");
-	yourPokename.innerHTML = yourPokemon.yourPokename;
-
-	const yourPoketype = document.createElement("div");
-	yourPoketype.classList.add("your-poketype");
-	// yourPoketype.innerHTML = typeInfo[yourPokeType].name;
-
-	const btnContainer = document.createElement("div");
-	btnContainer.classList.add("btn-container");
-
-	const saveBtn = createSaveBtn(index);
-	const deleteBtn = createDeleteBtn(index);
-	const editBtn = createEditBtn(index);
-
-	pokecard.append(eastereggSprite, yourPokename, yourPoketype, btnContainer);
-
-	btnContainer.append(saveBtn, deleteBtn, editBtn);
-
-	newCard.append(pokecard, btnContainer);
-
-	container.prepend(newCard);
-
-	return newCard;
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-	refreshPokes();
-});
