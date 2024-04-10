@@ -10,6 +10,7 @@ body {
 }
 
 body,
+.cyo-container,
 .caught-pokes,
 .container {
 	width: 100vw;
@@ -65,8 +66,7 @@ body,
 
 .masterball,
 .saved-masterball,
-.new-card,
-.new-cardtosave {
+.new-card {
 	display: flex;
 	box-sizing: border-box;
 	width: 150px;
@@ -93,22 +93,22 @@ body,
 }
 
 .name,
-.your-pokename,
+.new-pokename,
 .type-name,
-.your-poketype,
+.new-poketype,
 .id {
 	color: black;
 	text-align: center;
 }
 
 .name,
-.your-pokename {
+.new-pokename {
 	font-size: 15px;
 	text-transform: uppercase;
 }
 
 .type-name,
-.your-poketype,
+.new-poketype,
 .id {
 	font-size: 12px;
 }
@@ -153,7 +153,7 @@ h3 {
 	font-size: 20px;
 }
 
-.create-your-own {
+#create-your-own {
 	margin: 25px auto 25px auto;
 }
 
