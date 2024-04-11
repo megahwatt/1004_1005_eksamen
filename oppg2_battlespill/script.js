@@ -5,6 +5,9 @@ let pokemonDataArray = [];
 let championArray = [];
 let enemyArray = [];
 
+let championBattleArray = [];
+let enemyBattleArray = [];
+
 const pokeballImgs = ["assets/ball_bw.png", "assets/ball_rgb_closed.png", "assets/ball_rgb_open.png"];
 /*
 sprite
@@ -30,14 +33,15 @@ inpocketball
 */
 
 // GLOBAL VARIABLES
-
-//var mainBattleContainer = document.querySelector(".main-battle-container");
-//var battleContainers = mainBattleContainer.querySelectorAll(".battle-container");
+var mainBattleContainer = document.querySelector(".main-battle-container");
+var battleContainers = mainBattleContainer.querySelectorAll(".battle-container");
 
 var mainPocketballContainer = document.querySelector(".main-pocketball-container");
 var pocketballContainers = mainPocketballContainer.querySelectorAll(".pocketball-container");
 
-var pocketballs = mainPocketballContainer.querySelectorAll(".pocketball");
+var pocketballs = document.querySelectorAll(".pocketball");
+
+var txtContainer = document.querySelectorAll(".txt-container");
 
 // FETCH DATA FROM API AND MANIPULATE DATA TO START
 const urlGenI = `https://pokeapi.co/api/v2/generation/1`;
@@ -48,7 +52,6 @@ async function getPokemonNames() {
 	try {
 		const pokemonNames = await (await fetch(urlGenI)).json();
 		pokemonNamesArray = pokemonNames.pokemon_species.map((pokemon) => pokemon.name);
-		console.log("pokemonnamesarray", pokemonNamesArray);
 	} catch (error) {
 		console.error("404 getPokemonNames || Couldn't fetch", error.message);
 	}
@@ -76,6 +79,7 @@ async function getPokemonData() {
 				sprite: pokemonSprite,
 				id: pokemonID,
 				name: pokemonName,
+				currentHP: pokemonStatsHP,
 				maxHP: pokemonStatsHP,
 				attack: pokemonStatsAttack,
 				defense: pokemonStatsDefense,
@@ -89,18 +93,39 @@ async function getPokemonData() {
 		console.error("404 getPokemonData || Couldn't fetch", error);
 	}
 }
+/*
+sprite
+id
+name
 
+currentHP
+maxHP
+
+currentXP
+targetXP
+
+attack
+defense
+speed
+
+typeI
+typeII
+
+alive
+battling
+inpocketball
+*/
 function outputArrayToConsole() {
 	pokemonDataArray.forEach((pokemon) => {
 		console.log("sprite", pokemon.sprite);
-		console.log("id", pokemon.id);
-		console.log("name", pokemon.name);
-		console.log("maxHP", pokemon.maxHP);
+		console.log(`id #${pokemon.id}`);
+		console.log(pokemon.name);
+		console.log("HP", `${pokemon.currentHP} / ${pokemon.maxHP}`);
 		console.log("attack", pokemon.attack);
 		console.log("defense", pokemon.defense);
 		console.log("speed", pokemon.speed);
-		console.log("typeOne", pokemon.typeOne);
-		console.log("typeTwo", pokemon.typeTwo);
+		console.log("type", `${pokemon.typeOne}, ${pokemon.typeTwo}`);
+		console.log("-----");
 	});
 }
 
@@ -113,8 +138,6 @@ function divideAndConquer(pokemonDataArray) {
 	const split = Math.ceil(pokemonDataArray.length / 2);
 	const championArray = pokemonDataArray.slice(0, split);
 	const enemyArray = pokemonDataArray.slice(split);
-
-	//pokemonDataArray.length = 0;
 
 	return [championArray, enemyArray];
 }
@@ -159,10 +182,73 @@ function createPocketball(pokemon) {
 
 	const txtContainer = document.createElement("div");
 	txtContainer.classList.add("txt-container");
-	txtContainer.innerHTML = `${pokemon.name}<br />${pokemon.maxHP}<br />`;
+	txtContainer.innerHTML = `${pokemon.name}<br />${pokemon.currentHP} / ${pokemon.maxHP}<br />`;
 
 	pocketball.append(pocketballImg, divider, txtContainer);
 	return pocketball;
+}
+
+// TO BATTLE!
+
+function createCallToBattleBtn() {
+	pocketballs.forEach((pocketball, index) => {
+		const pocketballImg = pocketball.querySelector(".pocketball-img");
+		pocketballImg.addEventListener("click", () => {
+			toBattleExclamationMark(index);
+		});
+	});
+}
+createCallToBattleBtn();
+
+function toBattleExclamationMark(index) {
+	pocketballs[index].querySelector(".pocketball-img").src = pokeballImgs[2];
+
+	const clickedPokemon = index < championArray.length ? championArray[index] : enemyArray[index - championArray.length];
+
+	if (index < championArray.length) {
+		championArray.splice(index, 1);
+	} else {
+		enemyArray.splice(index - championArray.length, 1);
+	}
+
+	if (index < championArray.length) {
+		championBattleArray.push(clickedPokemon);
+	} else {
+		enemyBattleArray.push(clickedPokemon);
+	}
+
+	displayPokemonStats();
+}
+
+function displayPokemonStats() {
+	txtContainer.innerHTML = "";
+
+	championBattleArray.forEach((pokemon) => {
+		const txtContainer = createStatDisplay(pokemon);
+		battleContainers[0].appendChild(txtContainer);
+	});
+
+	enemyBattleArray.forEach((pokemon) => {
+		const txtContainer = createStatDisplay(pokemon);
+		battleContainers[1].appendChild(txtContainer);
+	});
+}
+
+function createStatDisplay(pokemon) {
+	const txtContainer = document.createElement("div");
+	txtContainer.classList.add("pokemon-stats");
+
+	txtContainer.innerHTML = `<p><img src="${pokemon.sprite}" alt="The official artwork of ${pokemon.name}"><br />
+    #${pokemon.id} ${pokemon.name}<br />
+    ${pokemon.currentHP} / ${pokemon.maxHP}</p>
+    <br />
+    <p>Attack: ${pokemon.attack}<br />
+    Defense: ${pokemon.defense}<br />
+    Speed: ${pokemon.speed}</p>
+    <br />
+    <p>Type: ${pokemon.typeOne}, ${pokemon.typeTwo || ""}</p>`;
+
+	return txtContainer;
 }
 
 /*
@@ -223,30 +309,6 @@ let enemyArray = [
 ];
 */
 /*
-var healerNameTxt = document.getElementById("healer-name-txt");
-healerNameTxt.innerHTML = "Henriette Healer";
-
-var healerHealthTxt = document.getElementById("healer-health-txt");
-healerHealthTxt.innerHTML = `${heroesArray[0].currentHP} / ${heroesArray[0].maxHP} HP`;
-
-var archerNameTxt = document.getElementById("archer-name-txt");
-archerNameTxt.innerHTML = "Ariana Archer";
-
-var archerHealthTxt = document.getElementById("archer-health-txt");
-archerHealthTxt.innerHTML = `${heroesArray[1].currentHP} / ${heroesArray[1].maxHP} HP`;
-
-var warriorNameTxt = document.getElementById("warrior-name-txt");
-warriorNameTxt.innerHTML = "Wyona Warrior";
-
-var warriorHealthTxt = document.getElementById("warrior-health-txt");
-warriorHealthTxt.innerHTML = `${heroesArray[2].currentHP} / ${heroesArray[2].maxHP} HP`;
-
-var dragonNameTxt = document.getElementById("dragon-name-txt");
-dragonNameTxt.innerHTML = "Daar Dragon";
-
-var dragonHealthTxt = document.querySelector(".dragon-health-txt");
-dragonHealthTxt.innerHTML = `${dragonObject.currentHP} / ${dragonObject.maxHP} HP`;
-
 const heroX = document.querySelectorAll(".img-container");
 
 heroX.forEach(function (heroAttack, index) {
