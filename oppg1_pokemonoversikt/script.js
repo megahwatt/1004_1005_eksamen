@@ -119,52 +119,32 @@ filterBtns.forEach((img) => {
 filterBtns.forEach((img) => {
 	img.addEventListener("click", (event) => {
 		const typeID = parseInt(event.currentTarget.getAttribute("data-type"));
-		console.log("Clicked filter button with type ID:", typeID);
 
 		filterByType(typeID);
 	});
 });
 
 function filterByType(selectedType) {
-	console.log("Filtering by type:", selectedType);
-
 	masterballs.forEach((masterball) => {
 		const typeID = parseInt(masterball.dataset.typeID);
-		console.log("Masterball typeID:", typeID);
 
 		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 		const sprite = masterball.querySelector(".sprite");
 
 		masterball.style.display = selectedType === "0" || typeID === parseInt(selectedType) ? "block" : "none";
-		console.log("Masterball display style:", masterball.style.display);
 
 		if (selectedType === "0") {
-			console.log("No type selected, displaying masterball:", masterball.style.display);
-
 			sprite.style.backgroundColor = "transparent";
 			buttons.forEach((button) => {
 				button.style.backgroundColor = "transparent";
 			});
 		} else {
-			console.log("Selected type is not empty, displaying masterball:", masterball.style.display);
-
 			sprite.style.backgroundColor = typeInfo[typeID].dark;
 			buttons.forEach((button) => {
 				button.style.backgroundColor = typeInfo[typeID].light;
 			});
 		}
 	});
-}
-
-function filterClick(event) {
-	const selectedType = event.currentTarget.getAttribute("data-type");
-	console.log("Clicked filter button with data-type:", selectedType);
-
-	if (selectedType === "0") {
-		refreshPokes();
-	} else {
-		filterByType(selectedType);
-	}
 }
 
 function createMasterballs() {
@@ -174,7 +154,6 @@ function createMasterballs() {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
 		masterball.dataset.typeID = parseInt(pokemon.pokeTypeID);
-		console.log("Created masterball with type ID:", masterball.dataset.typeID);
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -307,7 +286,7 @@ function updateSavedPokemons(index) {
 }
 
 // DELETE FROM ARRAY AND LOCALSTORAGE -- OPPG 1.5
-function createDeleteBtn() {
+function createDeleteBtn(index) {
 	const deleteBtn = document.createElement("button");
 	deleteBtn.classList.add("delete-btn");
 	deleteBtn.innerHTML = "DELETE";
