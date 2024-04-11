@@ -8,8 +8,9 @@ const caughtPokes = document.querySelector(".caught-pokes");
 const container = document.querySelector(".container");
 const filterBtns = document.querySelectorAll(".filter");
 let masterballs = document.querySelectorAll(".masterball");
+let savedMasterballs = document.querySelectorAll(".saved-masterball");
 
-// Fetch API and data about each pokémon in Gen I, II, III and IV
+// INITIAL FETCH
 async function gottaCatchEmAll() {
 	try {
 		const [dataGenI, dataGenII, dataGenIII, dataGenIV] = [
@@ -34,7 +35,7 @@ async function gottaCatchEmAll() {
 		console.log("Gotcha! First four generations were caught!");
 		return pokeNames;
 	} catch {
-		console.error("404 Oh no, the Pokémons broke free!", error.message);
+		console.error("404 gottaCatchEmAll Oh no, the Pokémons broke free!", error.message);
 		return [];
 	}
 }
@@ -62,7 +63,7 @@ async function getPokeData(pokeNames) {
 
 		return pokeArray;
 	} catch {
-		console.error("404 Calling getPokeData", error.message);
+		console.error("404 getPokeData couldn't call function", error.message);
 		return [];
 	}
 }
@@ -70,12 +71,11 @@ async function getPokeData(pokeNames) {
 gottaCatchEmAll().then((pokeNames) => {
 	getPokeData(pokeNames)
 		.then((result) => {
-			console.log("Log results from getPokeData", result);
 			pokeArray = result;
 			createMasterballs();
 		})
 		.catch((error) => {
-			console.error("404 calling gottaCatchEmAll", error.message);
+			console.error("404 gottaCatchEmAll couldn't call function", error.message);
 			return [];
 		});
 });
@@ -148,7 +148,6 @@ function filterClick(event) {
 	}
 }
 
-// Create pokémon-cards
 function createMasterballs() {
 	const maxFifty = pokeArray.slice(0, 50);
 	maxFifty.forEach((pokemon, index) => {
@@ -190,6 +189,7 @@ function createMasterballs() {
 
 		container.append(masterball);
 	});
+	//const masterball = querySelector(".masterball");
 	filterByType("");
 }
 
@@ -210,7 +210,6 @@ function createSaveBtn(index) {
 function updateAfterSave() {
 	refreshPokes();
 	updateSavedPokemons();
-	//refreshCyo();
 }
 
 function tooManySaved() {
@@ -308,7 +307,7 @@ function createDeleteBtn() {
 				releasePokemon(masterballIndex);
 			}
 		} catch (error) {
-			console.error("404 Parent masterball not found", error.message);
+			console.error("404 createDeleteBtn no parent found:(", error.message);
 		}
 	});
 
@@ -318,7 +317,6 @@ function createDeleteBtn() {
 function updateAfterDelete() {
 	refreshPokes();
 	refreshCaught();
-	//refreshCyo();
 }
 
 function releasePokemon(index) {
@@ -343,7 +341,7 @@ function releasePokemon(index) {
 			updateAfterDelete();
 		}
 	} catch (error) {
-		console.error("404 Invalid index", error.message);
+		console.error("404 releasePokemon invalid index", error.message);
 	}
 }
 
@@ -360,28 +358,33 @@ function createEditBtn(index) {
 	return editBtn;
 }
 
-function updateShownPokes(index, newPokeName, newPokeType) {
-	applyEdits(index, newPokeName, newPokeType, pokeArray);
-	applyEdits(index, newPokeName, newPokeType, savedPokes);
-}
-
-function applyEdits(index, newPokeName, newPokeType) {
+function applyEdits(index, newPokeName, newPokeType, pokeArray, savedPokes) {
 	try {
-		if (masterballs && index >= 0 && index < masterballs.length) {
-			const name = masterballs[index].querySelector(".name");
-			const sprite = masterballs[index].querySelector(".sprite");
-			const typeName = masterballs[index].querySelector(".type-name");
-			const buttons = masterballs[index].querySelectorAll(".save-btn, .delete-btn, .edit-btn");
+		const masterballs = container.children;
+		const applyToArray = pokeArray || savedPokes;
 
-			name.innerHTML = newPokeName;
-			typeName.innerHTML = typeInfo.find((type) => type.id === newPokeType).name;
-			sprite.style.backgroundColor = typeInfo[newPokeType].dark;
-			buttons.forEach((button) => {
-				button.style.backgroundColor = typeInfo[newPokeType].light;
-			});
+		if (applyToArray && index >= 0 && index < applyToArray.length) {
+			const masterball = masterballs[index];
+			if (masterball) {
+				const name = masterball.querySelector(".name");
+				const sprite = masterball.querySelector(".sprite");
+				const typeName = masterball.querySelector(".type-name");
+				const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
+
+				name.innerHTML = newPokeName;
+				typeName.innerHTML = typeInfo.find((type) => type.id === newPokeType).name;
+				sprite.style.backgroundColor = typeInfo[newPokeType].dark;
+				buttons.forEach((button) => {
+					button.style.backgroundColor = typeInfo[newPokeType].light;
+				});
+			} else {
+				console.log("404 applyEdits no children:(", masterballs);
+			}
+		} else {
+			console.log("404 applyEdits no target", index, applyToArray);
 		}
 	} catch (error) {
-		console.error("404 Empty array/Invalid index", error.message);
+		console.error("404 applyEdits couldn't execute function", error.message);
 	}
 }
 
@@ -395,19 +398,19 @@ function editPokemon(index) {
 				pokeArray[index].pokeTypeID = newPokeType;
 				pokeArray[index].type = typeInfo.find((type) => type.id === newPokeType).name;
 				localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
-				updateShownPokes(index, newPokeName, newPokeType);
+				applyEdits(index, newPokeName, newPokeType, pokeArray, typeInfo);
 			} else if (index >= 0 && index < savedPokes.length) {
 				savedPokes[index].name = newPokeName;
 				savedPokes[index].pokeTypeID = newPokeType;
 				savedPokes[index].type = typeInfo.find((type) => type.id === newPokeType).name;
 				localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
-				updateShownPokes(index, newPokeName, newPokeType);
+				applyEdits(index, newPokeName, newPokeType, savedPokes, typeInfo);
 			} else {
 				alert("Ugyldig input. Vennligst velg et tall fra 1 til 18.");
 			}
 		}
 	} catch (error) {
-		console.error("404 Empty array/Invalid index", error.message);
+		console.error("404 editPokemon empty array/invalid index", error.message);
 	}
 }
 
@@ -416,14 +419,14 @@ const cyoContainer = document.querySelector(".cyo-container");
 
 function fetchEasteregg() {
 	const eastereggs = [
-		{ name: "img1", path: "assets/eastereggs/01_agumon.webp" },
-		{ name: "img2", path: "assets/eastereggs/02_gabumon.webp" },
-		{ name: "img3", path: "assets/eastereggs/03_biyomon.webp" },
-		{ name: "img4", path: "assets/eastereggs/04_tentomon.webp" },
-		{ name: "img5", path: "assets/eastereggs/05_palmon.webp" },
-		{ name: "img6", path: "assets/eastereggs/06_gomamon.webp" },
-		{ name: "img7", path: "assets/eastereggs/07_patamon.webp" },
-		{ name: "img8", path: "assets/eastereggs/08_gatomon.webp" },
+		{ name: "img1", path: "//assets/eastereggs/01_agumon.webp" },
+		{ name: "img2", path: "/assets/eastereggs/02_gabumon.webp" },
+		{ name: "img3", path: "/assets/eastereggs/03_biyomon.webp" },
+		{ name: "img4", path: "/assets/eastereggs/04_tentomon.webp" },
+		{ name: "img5", path: "/assets/eastereggs/05_palmon.webp" },
+		{ name: "img6", path: "/assets/eastereggs/06_gomamon.webp" },
+		{ name: "img7", path: "/assets/eastereggs/07_patamon.webp" },
+		{ name: "img8", path: "/assets/eastereggs/08_gatomon.webp" },
 	];
 
 	const randomIndex = Math.floor(Math.random() * eastereggs.length);
@@ -443,7 +446,6 @@ function createPokemonBtn() {
 	});
 
 	document.addEventListener("keydown", function (event) {
-		console.log("Enter clicked");
 		if (event.key === "Enter") {
 			const typeSelectorIndex = document.querySelector("#type-selector").value;
 			createPokemon(typeSelectorIndex);
@@ -462,10 +464,10 @@ function createPokemon(typeSelectorIndex) {
 	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
 	localStorage.setItem("cyoArray", JSON.stringify(cyoArray));
 
-	assemblePokemon(pokeArray.length - 1, cyoMonster, typeInfo, typeSelectorIndex);
+	assemblePokemon(pokeArray.length - 1, cyoMonster, typeSelectorIndex);
 }
 
-function assemblePokemon(cyoMonster, typeInfo, typeSelectorIndex) {
+function assemblePokemon(cyoMonster, typeSelectorIndex) {
 	const newCard = document.createElement("div");
 	newCard.classList.add("new-card");
 	newCard.dataset.typeId = typeSelectorIndex;
@@ -477,7 +479,7 @@ function assemblePokemon(cyoMonster, typeInfo, typeSelectorIndex) {
 	eastereggSprite.classList.add("easteregg-sprite");
 	eastereggSprite.src = cyoMonster.eastereggSprite;
 	eastereggSprite.alt = `Sprite of ${cyoMonster.newName}`;
-	eastereggSprite.style.backgroundColor = typeInfo[typeSelectorIndex].dark;
+	//eastereggSprite.style.backgroundColor = typeInfo[typeSelectorIndex].dark;
 
 	const newName = document.createElement("div");
 	newName.classList.add("new-pokename");
@@ -485,7 +487,7 @@ function assemblePokemon(cyoMonster, typeInfo, typeSelectorIndex) {
 
 	const newPoketype = document.createElement("div");
 	newPoketype.classList.add("new-poketype");
-	newPoketype.innerHTML = typeInfo[typeSelectorIndex].name;
+	//newPoketype.innerHTML = typeInfo[typeSelectorIndex].name;
 
 	pokecard.append(eastereggSprite, newName, newPoketype);
 
@@ -513,7 +515,7 @@ function refreshCyo() {
 		eastereggSprite.classList.add("easteregg-sprite");
 		eastereggSprite.src = cyoMonster.eastereggSprite;
 		eastereggSprite.alt = `Sprite of ${cyoMonster.newName}`;
-		eastereggSprite.style.backgroundColor = typeInfo[typeSelectorIndex].dark;
+		//eastereggSprite.style.backgroundColor = typeInfo[typeSelectorIndex].dark;
 
 		const newName = document.createElement("div");
 		newName.classList.add("new-pokename");
@@ -521,7 +523,7 @@ function refreshCyo() {
 
 		const newPoketype = document.createElement("div");
 		newPoketype.classList.add("new-poketype");
-		newPoketype.innerHTML = typeInfo[typeSelectorIndex].name;
+		//newPoketype.innerHTML = typeInfo[typeSelectorIndex].name;
 
 		pokecard.append(eastereggSprite, newName, newPoketype);
 
