@@ -16,17 +16,13 @@ body,
 	width: 100vw;
 	display: flex;
 	flex-flow: wrap;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 }
 
 .divider {
 	width: 100vw;
 	height: 0;
-}
-
-.hide {
-	display: none !important;
 }
 
 .filter-container {
@@ -67,7 +63,6 @@ body,
 .masterball,
 .saved-masterball,
 .new-card {
-	display: flex;
 	box-sizing: border-box;
 	width: 150px;
 	flex-direction: column;

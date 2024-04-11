@@ -7,8 +7,31 @@ let cyoArray = [];
 const caughtPokes = document.querySelector(".caught-pokes");
 const container = document.querySelector(".container");
 const filterBtns = document.querySelectorAll(".filter");
+const filterBtnsType = {};
 let masterballs = document.querySelectorAll(".masterball");
 let savedMasterballs = document.querySelectorAll(".saved-masterball");
+
+const typeInfo = [
+	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
+	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
+	{ id: 2, name: "Fighting", light: "#ffc53a", dark: "#fa7d00" },
+	{ id: 3, name: "Flying", light: "#bad9f7", dark: "#7eb5e6" },
+	{ id: 4, name: "Poison", light: "#cb7ce6", dark: "#8c3ec3" },
+	{ id: 5, name: "Ground", light: "#ce925a", dark: "#8c4e1e" },
+	{ id: 6, name: "Rock", light: "#d9d5c3", dark: "#ada57b" },
+	{ id: 7, name: "Bug", light: "#cbd452", dark: "#8c9d19" },
+	{ id: 8, name: "Ghost", light: "#b27cb2", dark: "#6e3e6b" },
+	{ id: 9, name: "Steel", light: "#9accd6", dark: "#5d9db2" },
+	{ id: 10, name: "Fire", light: "#f76868", dark: "#de2626" },
+	{ id: 11, name: "Water", light: "#63c0f7", dark: "#267de6" },
+	{ id: 12, name: "Grass", light: "#7ed263", dark: "#3f9d26" },
+	{ id: 13, name: "Electric", light: "#fce03a", dark: "#f4bc00" },
+	{ id: 14, name: "Psychic", light: "#f780ba", dark: "#e9457b" },
+	{ id: 15, name: "Ice", light: "#7bebff", dark: "#3fd2f4" },
+	{ id: 16, name: "Dragon", light: "#8c9eef", dark: "#505ed6" },
+	{ id: 17, name: "Dark", light: "#8f7c7e", dark: "#503e3c" },
+	{ id: 18, name: "Fairy", light: "#f7a9f7", dark: "#ec6de6" },
+];
 
 // INITIAL FETCH
 async function gottaCatchEmAll() {
@@ -72,7 +95,8 @@ gottaCatchEmAll().then((pokeNames) => {
 	getPokeData(pokeNames)
 		.then((result) => {
 			pokeArray = result;
-			createMasterballs();
+			refreshPokes();
+			createPokemonBtn();
 		})
 		.catch((error) => {
 			console.error("404 gottaCatchEmAll couldn't call function", error.message);
@@ -80,57 +104,50 @@ gottaCatchEmAll().then((pokeNames) => {
 		});
 });
 
-// FILTER AND STYLING BY TYPE -- OPPG 1.2
-const typeInfo = [
-	{ id: 0, name: "All", light: "transparent", dark: "transparent" },
-	{ id: 1, name: "Normal", light: "#d0d1d0", dark: "#9c9d9a" },
-	{ id: 2, name: "Fighting", light: "#ffc53a", dark: "#fa7d00" },
-	{ id: 3, name: "Flying", light: "#bad9f7", dark: "#7eb5e6" },
-	{ id: 4, name: "Poison", light: "#cb7ce6", dark: "#8c3ec3" },
-	{ id: 5, name: "Ground", light: "#ce925a", dark: "#8c4e1e" },
-	{ id: 6, name: "Rock", light: "#d9d5c3", dark: "#ada57b" },
-	{ id: 7, name: "Bug", light: "#cbd452", dark: "#8c9d19" },
-	{ id: 8, name: "Ghost", light: "#b27cb2", dark: "#6e3e6b" },
-	{ id: 9, name: "Steel", light: "#9accd6", dark: "#5d9db2" },
-	{ id: 10, name: "Fire", light: "#f76868", dark: "#de2626" },
-	{ id: 11, name: "Water", light: "#63c0f7", dark: "#267de6" },
-	{ id: 12, name: "Grass", light: "#7ed263", dark: "#3f9d26" },
-	{ id: 13, name: "Electric", light: "#fce03a", dark: "#f4bc00" },
-	{ id: 14, name: "Psychic", light: "#f780ba", dark: "#e9457b" },
-	{ id: 15, name: "Ice", light: "#7bebff", dark: "#3fd2f4" },
-	{ id: 16, name: "Dragon", light: "#8c9eef", dark: "#505ed6" },
-	{ id: 17, name: "Dark", light: "#8f7c7e", dark: "#503e3c" },
-	{ id: 18, name: "Fairy", light: "#f7a9f7", dark: "#ec6de6" },
-];
-
+// refresh and update functions
 function refreshPokes() {
 	container.innerHTML = "";
 	createMasterballs();
 }
 
-function refreshCaught() {
-	caughtPokes.innerHTML = "";
-	updateSavedPokemons();
-}
+// FILTER AND STYLING BY TYPE -- OPPG 1.2
+filterBtns.forEach((img) => {
+	const typeID = parseInt(img.getAttribute("data-type"));
+	filterBtnsType[typeID] = img;
+});
 
 filterBtns.forEach((img) => {
-	img.addEventListener("click", filterClick);
+	img.addEventListener("click", (event) => {
+		const typeID = parseInt(event.currentTarget.getAttribute("data-type"));
+		console.log("Clicked filter button with type ID:", typeID);
+
+		filterByType(typeID);
+	});
 });
 
 function filterByType(selectedType) {
+	console.log("Filtering by type:", selectedType);
+
 	masterballs.forEach((masterball) => {
-		const typeID = parseInt(masterball.dataset.typeId);
+		const typeID = parseInt(masterball.dataset.typeID);
+		console.log("Masterball typeID:", typeID);
+
 		const buttons = masterball.querySelectorAll(".save-btn, .delete-btn, .edit-btn");
 		const sprite = masterball.querySelector(".sprite");
 
-		masterball.style.display = selectedType === "" || typeID === parseInt(selectedType) ? "block" : "none";
+		masterball.style.display = selectedType === "0" || typeID === parseInt(selectedType) ? "block" : "none";
+		console.log("Masterball display style:", masterball.style.display);
 
-		if (selectedType === "") {
+		if (selectedType === "0") {
+			console.log("No type selected, displaying masterball:", masterball.style.display);
+
 			sprite.style.backgroundColor = "transparent";
 			buttons.forEach((button) => {
 				button.style.backgroundColor = "transparent";
 			});
 		} else {
+			console.log("Selected type is not empty, displaying masterball:", masterball.style.display);
+
 			sprite.style.backgroundColor = typeInfo[typeID].dark;
 			buttons.forEach((button) => {
 				button.style.backgroundColor = typeInfo[typeID].light;
@@ -140,8 +157,10 @@ function filterByType(selectedType) {
 }
 
 function filterClick(event) {
-	selectedType = event.currentTarget.getAttribute("data-type");
-	if (selectedType === "") {
+	const selectedType = event.currentTarget.getAttribute("data-type");
+	console.log("Clicked filter button with data-type:", selectedType);
+
+	if (selectedType === "0") {
 		refreshPokes();
 	} else {
 		filterByType(selectedType);
@@ -149,11 +168,13 @@ function filterClick(event) {
 }
 
 function createMasterballs() {
-	const maxFifty = pokeArray.slice(0, 50);
+	const maxFifty = (JSON.parse(localStorage.getItem("pokeArray")) || []).slice(0, 50);
+
 	maxFifty.forEach((pokemon, index) => {
 		const masterball = document.createElement("div");
 		masterball.classList.add("masterball");
-		masterball.dataset.typeId = pokemon.pokeTypeID;
+		masterball.dataset.typeID = parseInt(pokemon.pokeTypeID);
+		console.log("Created masterball with type ID:", masterball.dataset.typeID);
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -189,8 +210,6 @@ function createMasterballs() {
 
 		container.append(masterball);
 	});
-	//const masterball = querySelector(".masterball");
-	filterByType("");
 }
 
 // SAVE TO ARRAY AND LOCALSTORAGE -- OPPG 1.4
@@ -205,11 +224,6 @@ function createSaveBtn(index) {
 	});
 
 	return saveBtn;
-}
-
-function updateAfterSave() {
-	refreshPokes();
-	updateSavedPokemons();
 }
 
 function tooManySaved() {
@@ -235,7 +249,6 @@ function catchPokemon(index) {
 				pokeArray.splice(index, 1);
 				localStorage.setItem("savedPokes", JSON.stringify(savedPokes));
 				localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
-				updateAfterSave();
 			} else {
 				tooManySaved();
 			}
@@ -252,7 +265,7 @@ function updateSavedPokemons(index) {
 	savedPokeList.forEach((pokemon) => {
 		const savedMasterball = document.createElement("div");
 		savedMasterball.classList.add("saved-masterball");
-		savedMasterball.dataset.typeId = pokemon.pokeTypeID;
+		savedMasterball.dataset.typeID = pokemon.pokeTypeID;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
@@ -314,11 +327,6 @@ function createDeleteBtn() {
 	return deleteBtn;
 }
 
-function updateAfterDelete() {
-	refreshPokes();
-	refreshCaught();
-}
-
 function releasePokemon(index) {
 	try {
 		if (index !== undefined && index >= 0 && index < savedPokes.length) {
@@ -329,7 +337,6 @@ function releasePokemon(index) {
 			if (savedMasterballDelete) {
 				savedMasterballDelete.remove();
 			}
-			updateAfterDelete();
 		} else if (index !== undefined && index >= 0 && index < pokeArray.length) {
 			pokeArray.splice(index, 1);
 			localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
@@ -338,7 +345,6 @@ function releasePokemon(index) {
 			if (masterballDelete) {
 				masterballDelete.remove();
 			}
-			updateAfterDelete();
 		}
 	} catch (error) {
 		console.error("404 releasePokemon invalid index", error.message);
@@ -415,121 +421,119 @@ function editPokemon(index) {
 }
 
 // CREATE YOUR OWN POCKET MONSTER -- OPPG 1.3
+eastereggSprites = [
+	"assets/eastereggs/01.png",
+	"assets/eastereggs/02.png",
+	"assets/eastereggs/03.png",
+	"assets/eastereggs/04.png",
+	"assets/eastereggs/06.png",
+	"assets/eastereggs/05.png",
+	"assets/eastereggs/07.png",
+	"assets/eastereggs/08.png",
+];
+
 const cyoContainer = document.querySelector(".cyo-container");
 
-function fetchEasteregg() {
-	const eastereggs = [
-		{ name: "img1", path: "//assets/eastereggs/01_agumon.webp" },
-		{ name: "img2", path: "/assets/eastereggs/02_gabumon.webp" },
-		{ name: "img3", path: "/assets/eastereggs/03_biyomon.webp" },
-		{ name: "img4", path: "/assets/eastereggs/04_tentomon.webp" },
-		{ name: "img5", path: "/assets/eastereggs/05_palmon.webp" },
-		{ name: "img6", path: "/assets/eastereggs/06_gomamon.webp" },
-		{ name: "img7", path: "/assets/eastereggs/07_patamon.webp" },
-		{ name: "img8", path: "/assets/eastereggs/08_gatomon.webp" },
-	];
-
-	const randomIndex = Math.floor(Math.random() * eastereggs.length);
-	return eastereggs[randomIndex].path;
+function getRandomSprite() {
+	const randomSprite = Math.floor(Math.random() * eastereggSprites.length);
+	return eastereggSprites[randomSprite];
 }
-
-const typeSelector = document.querySelector("#type-selector").value;
-
-const typeSelectorIndex = parseInt(typeSelector);
 
 function createPokemonBtn() {
 	const createBtn = document.querySelector("#create-btn");
-
 	createBtn.addEventListener("click", function () {
-		const typeSelectorIndex = document.querySelector("#type-selector").value;
-		createPokemon(typeSelectorIndex);
-	});
-
-	document.addEventListener("keydown", function (event) {
-		if (event.key === "Enter") {
-			const typeSelectorIndex = document.querySelector("#type-selector").value;
-			createPokemon(typeSelectorIndex);
-		}
+		getUserType();
 	});
 }
-createPokemonBtn();
 
-function createPokemon(typeSelectorIndex) {
-	const newName = document.querySelector("#your-pokename").value;
+function getUserType() {
+	const typeSelector = document.querySelector("#type-selector").value;
+	const cyoType = parseInt(typeSelector);
+	createPokemon(cyoType);
+}
 
-	const cyoMonster = { eastereggSprite: fetchEasteregg(), newName, typeSelectorIndex };
+function createPokemon(cyoType) {
+	const cyoName = document.querySelector("#your-pokename").value;
+
+	const cyoMonster = {
+		eastereggSprite: getRandomSprite(),
+		name: cyoName,
+		type: cyoType,
+	};
 
 	pokeArray.push(cyoMonster);
 	cyoArray.push(cyoMonster);
+
 	localStorage.setItem("pokeArray", JSON.stringify(pokeArray));
 	localStorage.setItem("cyoArray", JSON.stringify(cyoArray));
 
-	assemblePokemon(pokeArray.length - 1, cyoMonster, typeSelectorIndex);
+	assemble(cyoMonster, cyoType);
 }
 
-function assemblePokemon(cyoMonster, typeSelectorIndex) {
+function assemble(cyoMonster, cyoType) {
 	const newCard = document.createElement("div");
 	newCard.classList.add("new-card");
-	newCard.dataset.typeId = typeSelectorIndex;
+	newCard.dataset.typeID = cyoType;
 
 	const pokecard = document.createElement("div");
 	pokecard.classList.add("pokecard");
 
 	const eastereggSprite = document.createElement("img");
 	eastereggSprite.classList.add("easteregg-sprite");
+	eastereggSprite.alt = `Sprite of ${cyoMonster.cyoName}`;
 	eastereggSprite.src = cyoMonster.eastereggSprite;
-	eastereggSprite.alt = `Sprite of ${cyoMonster.newName}`;
-	//eastereggSprite.style.backgroundColor = typeInfo[typeSelectorIndex].dark;
+	eastereggSprite.style.backgroundColor = typeInfo[cyoType].dark;
 
-	const newName = document.createElement("div");
-	newName.classList.add("new-pokename");
-	newName.innerHTML = cyoMonster.newName;
+	const cyoName = document.createElement("div");
+	cyoName.classList.add("new-pokename");
+	cyoName.innerHTML = cyoMonster.name;
 
-	const newPoketype = document.createElement("div");
-	newPoketype.classList.add("new-poketype");
-	//newPoketype.innerHTML = typeInfo[typeSelectorIndex].name;
+	const cyoTypeName = document.createElement("div");
+	cyoTypeName.classList.add("new-poketype");
+	cyoTypeName.innerHTML = typeInfo.find((type) => type.id === cyoType).name;
 
-	pokecard.append(eastereggSprite, newName, newPoketype);
+	pokecard.append(eastereggSprite, cyoName, cyoTypeName);
 
 	newCard.append(pokecard);
 
-	container.prepend(newCard);
-	cyoContainer.prepend(newCard);
+	cyoContainer.append(newCard);
+	container.prepend(newCard.cloneNode(true));
 
 	return newCard;
 }
 
 function refreshCyo() {
-	const cyoList = JSON.parse(localStorage.getItem("cyoArray")) || [];
-
 	cyoContainer.innerHTML = "";
-	cyoList.forEach((cyoMonster) => {
+	const cyoMonsterList = JSON.parse(localStorage.getItem("cyoArray")) || [];
+
+	cyoMonsterList.forEach((cyoMonster) => {
 		const newCard = document.createElement("div");
 		newCard.classList.add("new-card");
-		newCard.dataset.typeId = typeSelectorIndex;
+		newCard.dataset.typeID = cyoType;
 
 		const pokecard = document.createElement("div");
 		pokecard.classList.add("pokecard");
 
 		const eastereggSprite = document.createElement("img");
 		eastereggSprite.classList.add("easteregg-sprite");
+		eastereggSprite.alt = `Sprite of ${cyoMonster.cyoName}`;
 		eastereggSprite.src = cyoMonster.eastereggSprite;
-		eastereggSprite.alt = `Sprite of ${cyoMonster.newName}`;
-		//eastereggSprite.style.backgroundColor = typeInfo[typeSelectorIndex].dark;
+		eastereggSprite.style.backgroundColor = typeInfo[cyoType].dark;
 
-		const newName = document.createElement("div");
-		newName.classList.add("new-pokename");
-		newName.innerHTML = cyoMonster.newName;
+		const cyoName = document.createElement("div");
+		cyoName.classList.add("new-pokename");
+		cyoName.innerHTML = cyoMonster.name;
 
-		const newPoketype = document.createElement("div");
-		newPoketype.classList.add("new-poketype");
-		//newPoketype.innerHTML = typeInfo[typeSelectorIndex].name;
+		const cyoTypeName = document.createElement("div");
+		cyoTypeName.classList.add("new-poketype");
+		cyoTypeName.innerHTML = typeInfo.find((type) => type.id === cyoType).name;
 
-		pokecard.append(eastereggSprite, newName, newPoketype);
+		pokecard.append(eastereggSprite, cyoName, cyoTypeName);
 
 		newCard.append(pokecard);
 
-		container.prepend(newCard);
+		cyoContainer.append(newCard);
+		container.prepend(newCard.cloneNode(true));
 
 		return newCard;
 	});
