@@ -4,6 +4,8 @@ let pokemonDataArray = [];
 
 let championArray = [];
 let enemyArray = [];
+
+const pokeballImgs = ["assets/ball_bw.png", "assets/ball_rgb_closed.png", "assets/ball_rgb_open.png"];
 /*
 sprite
 id
@@ -29,7 +31,15 @@ inpocketball
 
 // GLOBAL VARIABLES
 
-// FETCH DATA FROM API
+//var mainBattleContainer = document.querySelector(".main-battle-container");
+//var battleContainers = mainBattleContainer.querySelectorAll(".battle-container");
+
+var mainPocketballContainer = document.querySelector(".main-pocketball-container");
+var pocketballContainers = mainPocketballContainer.querySelectorAll(".pocketball-container");
+
+var pocketballs = mainPocketballContainer.querySelectorAll(".pocketball");
+
+// FETCH DATA FROM API AND MANIPULATE DATA TO START
 const urlGenI = `https://pokeapi.co/api/v2/generation/1`;
 const urlPokemonID = `https://pokeapi.co/api/v2/pokemon/`;
 const pokemonsToFetch = [1, 18, 26, 27, 31, 43, 49, 63, 76, 80, 94, 148];
@@ -102,9 +112,9 @@ function divideAndConquer(pokemonDataArray) {
 
 	const split = Math.ceil(pokemonDataArray.length / 2);
 	const championArray = pokemonDataArray.slice(0, split);
-	const enemyArray = pokemonDataArray.slice(0, split);
+	const enemyArray = pokemonDataArray.slice(split);
 
-	pokemonDataArray.length = 0;
+	//pokemonDataArray.length = 0;
 
 	return [championArray, enemyArray];
 }
@@ -117,10 +127,66 @@ getPokemonNames()
 		const [championArray, enemyArray] = divideAndConquer(pokemonDataArray);
 		console.log("split champ", championArray);
 		console.log("split enemy", enemyArray);
+		sendArraysToPocketballs(championArray, enemyArray);
 	})
 	.catch((error) => {
-		console.error("Error:", error.message);
+		console.error("404 getPokemonNames .then-block:", error.message);
 	});
+
+// PUSH ARRAYS TO DOM, AND DISPLAY IN UI
+function sendArraysToPocketballs(championArray, enemyArray) {
+	championArray.forEach((pokemon) => {
+		const pocketball = createPocketball(pokemon);
+		pocketballContainers[0].appendChild(pocketball);
+	});
+
+	enemyArray.forEach((pokemon) => {
+		const pocketball = createPocketball(pokemon);
+		pocketballContainers[1].appendChild(pocketball);
+	});
+}
+
+function createPocketball(pokemon) {
+	const pocketball = document.createElement("div");
+	pocketball.classList.add("pocketball");
+
+	const pocketballImg = document.createElement("img");
+	pocketballImg.classList.add("pocketball-img");
+	pocketballImg.src = "assets/ball_rgb_closed.png";
+
+	const divider = document.createElement("div");
+	divider.classList.add("divider");
+
+	const txtContainer = document.createElement("div");
+	txtContainer.classList.add("txt-container");
+	txtContainer.innerHTML = `${pokemon.name}<br />${pokemon.maxHP}<br />`;
+
+	pocketball.append(pocketballImg, divider, txtContainer);
+	return pocketball;
+}
+
+/*
+sprite
+id
+name
+
+currentHP
+maxHP
+
+currentXP
+targetXP
+
+attack
+defense
+speed
+
+typeI
+typeII
+
+alive
+battling
+inpocketball
+*/
 
 /*
 let championArray = [
