@@ -1,3 +1,102 @@
+// ARRAYS
+let pokemonNamesArray = [];
+let pokemonDataArray = [];
+
+let championArray = [];
+let enemyArray = [];
+/*
+sprite
+id
+name
+
+currentHP
+maxHP
+
+currentXP
+targetXP
+
+attack
+defense
+speed
+
+typeI
+typeII
+
+alive
+battling
+inpocketball*/
+
+// GLOBAL VARIABLES
+
+// FETCH DATA FROM API
+const urlGenI = `https://pokeapi.co/api/v2/generation/1`;
+const urlPokemonID = `https://pokeapi.co/api/v2/pokemon/`;
+const pokemonsToFetch = [1, 18, 26, 27, 31, 43, 49, 63, 76, 80, 94];
+
+async function getPokemonData() {
+	try {
+		for (const id of pokemonsToFetch) {
+			const pokemonData = await (await fetch(urlPokemonID + id)).json();
+
+			const pokemonSprite = pokemonData.sprites.other["official-artwork"].front_default;
+
+			const pokemonID = pokemonData.id;
+			const pokemonName = pokemonData.name;
+
+			const pokemonTypeOne = pokemonData.types[0].type.name;
+			const pokemonTypeTwo = pokemonData.types[1]?.type.name || null;
+
+			const pokemonStatsHP = pokemonData.stats[0].base_stat;
+			const pokemonStatsAttack = pokemonData.stats[1].base_stat;
+			const pokemonStatsDefense = pokemonData.stats[2].base_stat;
+			const pokemonStatsSpeed = pokemonData.stats[5].base_stat;
+
+			pokemonDataArray.push({
+				sprite: pokemonSprite,
+				id: pokemonID,
+				name: pokemonName,
+				maxHP: pokemonStatsHP,
+				attack: pokemonStatsAttack,
+				defense: pokemonStatsDefense,
+				speed: pokemonStatsSpeed,
+				typeOne: pokemonTypeOne,
+				typeTwo: pokemonTypeTwo,
+			});
+		}
+		outputArrayToConsole();
+	} catch (error) {
+		console.error("404 getPokemonData || Couldn't fetch", error);
+	}
+}
+
+function outputArrayToConsole() {
+	pokemonDataArray.forEach((pokemon) => {
+		console.log("sprite", pokemon.sprite);
+		console.log("id", pokemon.id);
+		console.log("name", pokemon.name);
+		console.log("maxHP", pokemon.maxHP);
+		console.log("attack", pokemon.attack);
+		console.log("defense", pokemon.defense);
+		console.log("speed", pokemon.speed);
+		console.log("typeOne", pokemon.typeOne);
+		console.log("typeTwo", pokemon.typeTwo);
+	});
+}
+
+async function getPokemonNames() {
+	try {
+		const pokemonNames = await (await fetch(urlGenI)).json();
+		pokemonNamesArray = pokemonNames.pokemon_species.map((pokemon) => pokemon.name);
+		console.log("pokemonnamesarray", pokemonNamesArray);
+
+		getPokemonData();
+	} catch (error) {
+		console.error("404 getPokemonNames || Couldn't fetch", error.message);
+	}
+}
+getPokemonNames();
+
+/*
 let championArray = [
 	{
 		id: 0,
@@ -8,6 +107,7 @@ let championArray = [
 		targetxp: 0,
 		attack: 0,
 		defense: 0,
+		speed: 0,
 		alive: true,
 		battling: false,
 		inpockeball: true,
@@ -29,7 +129,7 @@ let enemyArray = [
 		inpockeball: true,
 	},
 ];
-
+*/
 /*
 var healerNameTxt = document.getElementById("healer-name-txt");
 healerNameTxt.innerHTML = "Henriette Healer";
