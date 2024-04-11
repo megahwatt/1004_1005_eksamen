@@ -9,61 +9,71 @@ body {
 }
 
 body,
-.battle-container,
-.pocketball-container {
+.main-battle-container,
+.main-pocketball-container {
 	width: 100vw;
 	display: flex;
 	flex-flow: row wrap;
 	align-items: flex-start;
-	justify-content: space-evenly;
+	justify-content: center;
 }
 
-.battle-container {
+.main-battle-container {
 	height: 75vh;
 	background-color: antiquewhite;
 }
 
-.pocketball-container {
+.main-pocketball-container {
 	height: 25vh;
+	background-color: blueviolet;
+}
+
+.battle-container,
+.pocketball-container {
+	width: 50vw;
+	display: flex;
+	justify-content: space-evenly;
+	align-items: flex-start;
+	flex-flow: column wrap;
+	align-content: center;
 	background-color: bisque;
 }
 
-.champion,
-.enemy {
-	width: 50vw;
-	background-color: cadetblue;
+.battle-txt-container {
+	background-color: aquamarine;
 }
 
+.champion-pocketball,
+.enemy-pocketball {
+	display: flex;
+	justify-content: space-evenly;
+	align-items: flex-start;
+	flex-flow: column wrap;
+	align-content: center;
+	background-color: red;
+}
+
+/*
 .pocketball {
-	/*empty*/
+	
 }
 
 .img {
-	/*empty*/
+	
 }
 
 .txt {
-	/*empty*/
+	
 }
 
-.enemy-pocketball-one,
-.enemy-pocketball-two,
-.enemy-pocketball-three,
-.enemy-pocketball-four,
-.enemy-pocketball-five,
-.enemy-pocketball-six {
-	/*empty*/
+.enemy-pocketball {
+	
 }
 
-.champion-pocketball-one,
-.champion-pocketball-two,
-.champion-pocketball-three,
-.champion-pocketball-four,
-.champion-pocketball-five,
-.champion-pocketball-six {
-	/*empty*/
+.champion-pocketball {
+	
 }
-
+*/
 /*
 champion pokeball container
 
