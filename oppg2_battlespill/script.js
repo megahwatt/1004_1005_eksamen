@@ -24,14 +24,25 @@ typeII
 
 alive
 battling
-inpocketball*/
+inpocketball
+*/
 
 // GLOBAL VARIABLES
 
 // FETCH DATA FROM API
 const urlGenI = `https://pokeapi.co/api/v2/generation/1`;
 const urlPokemonID = `https://pokeapi.co/api/v2/pokemon/`;
-const pokemonsToFetch = [1, 18, 26, 27, 31, 43, 49, 63, 76, 80, 94];
+const pokemonsToFetch = [1, 18, 26, 27, 31, 43, 49, 63, 76, 80, 94, 148];
+
+async function getPokemonNames() {
+	try {
+		const pokemonNames = await (await fetch(urlGenI)).json();
+		pokemonNamesArray = pokemonNames.pokemon_species.map((pokemon) => pokemon.name);
+		console.log("pokemonnamesarray", pokemonNamesArray);
+	} catch (error) {
+		console.error("404 getPokemonNames || Couldn't fetch", error.message);
+	}
+}
 
 async function getPokemonData() {
 	try {
@@ -83,18 +94,33 @@ function outputArrayToConsole() {
 	});
 }
 
-async function getPokemonNames() {
-	try {
-		const pokemonNames = await (await fetch(urlGenI)).json();
-		pokemonNamesArray = pokemonNames.pokemon_species.map((pokemon) => pokemon.name);
-		console.log("pokemonnamesarray", pokemonNamesArray);
-
-		getPokemonData();
-	} catch (error) {
-		console.error("404 getPokemonNames || Couldn't fetch", error.message);
+function divideAndConquer(pokemonDataArray) {
+	for (let i = pokemonDataArray.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[pokemonDataArray[i], pokemonDataArray[j]] = [pokemonDataArray[j], pokemonDataArray[i]];
 	}
+
+	const split = Math.ceil(pokemonDataArray.length / 2);
+	const championArray = pokemonDataArray.slice(0, split);
+	const enemyArray = pokemonDataArray.slice(0, split);
+
+	pokemonDataArray.length = 0;
+
+	return [championArray, enemyArray];
 }
-getPokemonNames();
+
+getPokemonNames()
+	.then(() => {
+		return getPokemonData();
+	})
+	.then(() => {
+		const [championArray, enemyArray] = divideAndConquer(pokemonDataArray);
+		console.log("split champ", championArray);
+		console.log("split enemy", enemyArray);
+	})
+	.catch((error) => {
+		console.error("Error:", error.message);
+	});
 
 /*
 let championArray = [

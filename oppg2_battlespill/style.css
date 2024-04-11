@@ -8,6 +8,62 @@ body {
 	overflow-x: hidden;
 }
 
+body,
+.battle-container,
+.pocketball-container {
+	width: 100vw;
+	display: flex;
+	flex-flow: row wrap;
+	align-items: flex-start;
+	justify-content: space-evenly;
+}
+
+.battle-container {
+	height: 75vh;
+	background-color: antiquewhite;
+}
+
+.pocketball-container {
+	height: 25vh;
+	background-color: bisque;
+}
+
+.champion,
+.enemy {
+	width: 50vw;
+	background-color: cadetblue;
+}
+
+.pocketball {
+	/*empty*/
+}
+
+.img {
+	/*empty*/
+}
+
+.txt {
+	/*empty*/
+}
+
+.enemy-pocketball-one,
+.enemy-pocketball-two,
+.enemy-pocketball-three,
+.enemy-pocketball-four,
+.enemy-pocketball-five,
+.enemy-pocketball-six {
+	/*empty*/
+}
+
+.champion-pocketball-one,
+.champion-pocketball-two,
+.champion-pocketball-three,
+.champion-pocketball-four,
+.champion-pocketball-five,
+.champion-pocketball-six {
+	/*empty*/
+}
+
 /*
 champion pokeball container
 
