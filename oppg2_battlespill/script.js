@@ -8,30 +8,6 @@ let enemyArray = [];
 let championBattleArray = [];
 let enemyBattleArray = [];
 
-const pokeballImgs = ["assets/ball_bw.png", "assets/ball_rgb_closed.png", "assets/ball_rgb_open.png"];
-/*
-sprite
-id
-name
-
-currentHP
-maxHP
-
-currentXP
-targetXP
-
-attack
-defense
-speed
-
-typeI
-typeII
-
-alive
-battling
-inpocketball
-*/
-
 // GLOBAL VARIABLES
 var mainBattleContainer = document.querySelector(".main-battle-container");
 var battleContainers = mainBattleContainer.querySelectorAll(".battle-container");
@@ -42,6 +18,10 @@ var pocketballContainers = mainPocketballContainer.querySelectorAll(".pocketball
 var pocketballs = document.querySelectorAll(".pocketball");
 
 var txtContainer = document.querySelectorAll(".txt-container");
+
+const pocketballImg = document.querySelectorAll(".pocketball-img");
+
+const pokeballImgs = ["assets/ball_bw.png", "assets/ball_rgb_closed.png", "assets/ball_rgb_open.png"];
 
 // FETCH DATA FROM API AND MANIPULATE DATA TO START
 const urlGenI = `https://pokeapi.co/api/v2/generation/1`;
@@ -88,34 +68,13 @@ async function getPokemonData() {
 				typeTwo: pokemonTypeTwo,
 			});
 		}
-		outputArrayToConsole();
+		//outputArrayToConsole();
 	} catch (error) {
 		console.error("404 getPokemonData || Couldn't fetch", error);
 	}
 }
-/*
-sprite
-id
-name
 
-currentHP
-maxHP
-
-currentXP
-targetXP
-
-attack
-defense
-speed
-
-typeI
-typeII
-
-alive
-battling
-inpocketball
-*/
-function outputArrayToConsole() {
+/*function outputArrayToConsole() {
 	pokemonDataArray.forEach((pokemon) => {
 		console.log("sprite", pokemon.sprite);
 		console.log(`id #${pokemon.id}`);
@@ -127,7 +86,7 @@ function outputArrayToConsole() {
 		console.log("type", `${pokemon.typeOne}, ${pokemon.typeTwo}`);
 		console.log("-----");
 	});
-}
+}*/
 
 function divideAndConquer(pokemonDataArray) {
 	for (let i = pokemonDataArray.length - 1; i > 0; i--) {
@@ -150,6 +109,7 @@ getPokemonNames()
 		const [championArray, enemyArray] = divideAndConquer(pokemonDataArray);
 		console.log("split champ", championArray);
 		console.log("split enemy", enemyArray);
+
 		sendArraysToPocketballs(championArray, enemyArray, championBattleArray, enemyBattleArray);
 	})
 	.catch((error) => {
@@ -163,9 +123,9 @@ function sendArraysToPocketballs(championArray, enemyArray) {
 		pocketballContainers[0].appendChild(pocketball);
 
 		pocketball.addEventListener("click", () => {
-			champToBattle(index, championArray, championBattleArray, pokemon);
+			champToBattle(pokemon, index, championArray, championBattleArray);
 
-			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
+			clickedPocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
 		});
 	});
 
@@ -174,7 +134,7 @@ function sendArraysToPocketballs(championArray, enemyArray) {
 		pocketballContainers[1].appendChild(pocketball);
 
 		pocketball.addEventListener("click", () => {
-			enemyToBattle(index, enemyArray, enemyBattleArray, pokemon);
+			enemyToBattle(pokemon, index, enemyArray, enemyBattleArray);
 
 			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
 		});
@@ -188,6 +148,7 @@ function createPocketball(pokemon) {
 	const pocketballImg = document.createElement("img");
 	pocketballImg.classList.add("pocketball-img");
 	pocketballImg.src = "assets/ball_rgb_closed.png";
+	pocketballImg.setAttribute("pocketball-img-index", pokeballimgIndex);
 
 	const divider = document.createElement("div");
 	divider.classList.add("divider");
@@ -205,7 +166,7 @@ function createPocketball(pokemon) {
 }
 
 // TO BATTLE!
-function champToBattle(index, championArray, championBattleArray, clickedPokemon) {
+function champToBattle(clickedPokemon, index, championArray, championBattleArray) {
 	if (index >= 0 && index < championArray.length && championBattleArray.length === 0) {
 		championArray.splice(index, 1);
 		championBattleArray.push(clickedPokemon);
@@ -214,12 +175,12 @@ function champToBattle(index, championArray, championBattleArray, clickedPokemon
 		clickedPokemon.champion = true;
 
 		championStats(clickedPokemon);
-	} else {
+	} else if (championBattleArray.length > 0) {
 		console.log("You can only do battle with one pokémon at a time!");
 	}
 }
 
-function enemyToBattle(index, enemyArray, enemyBattleArray, clickedPokemon) {
+function enemyToBattle(clickedPokemon, index, enemyArray, enemyBattleArray) {
 	if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
 		enemyArray.splice(index, 1);
 		enemyBattleArray.push(clickedPokemon);
@@ -253,6 +214,9 @@ function createStatDisplay(pokemon) {
 
 	const txtContainer = document.createElement("div");
 	txtContainer.classList.add("pokemon-stats");
+	/*txtContainer.addEventListener("click", function () {
+		setUpAttack(clickedPokemon);
+	});*/
 
 	txtContainer.innerHTML = `<p><img src="${pokemon.sprite}" class="sprite-to-display" alt="The official artwork of ${
 		pokemon.name
@@ -266,68 +230,36 @@ function createStatDisplay(pokemon) {
     Speed: ${pokemon.speed}</p>
     <br />
     <p>Type: ${pokemon.typeOne}, ${pokemon.typeTwo || ""}</p>`;
+
 	return txtContainer;
 }
 
 // EXECUTE ATTACK
-document.addEventListener("DOMContentLoaded", function () {
-	const championAttacks = mainBattleContainer.querySelector(".battle-container:nth-child(1) .txt-container.champion");
-	championAttacks.addEventListener("click", function () {
-		console.log("Champion clicked"); // Log a message when the champion is clicked
-		executeAttack(championBattleArray[0], enemyBattleArray[0]);
-	});
-});
-
-function executeAttack(attacker, defender) {
-	const attackerSpeed = attacker.speed;
-	const defenderSpeed = defender.speed;
-	console.log("Attacker Speed:", attackerSpeed); // Log the attacker's speed
-	console.log("Defender Speed:", defenderSpeed); // Log the defender's speed
-}
-executeAttack(attacker, defender);
-
-/* KEEP THIS VERSION
-const championAttacks = document.querySelector(".battle-container:nth-child(1) .txt-container");
-championAttacks.addEventListener("click", function () {
-	executeAttack(championBattleArray[0], enemyBattleArray[0]);
-});
-
-const enemyAttacks = document.querySelector(".battle-container:nth-child(2) .txt-container");
-enemyAttacks.addEventListener("click", function () {
-	executeAttack(enemyBattleArray[0], championBattleArray[0]);
-});
-
-function executeAttack(attacker, defender) {
-	const attackerSpeed = attacker.speed;
-	const defenderSpeed = defender.speed;
-	console.log("Attacker Speed:", attackerSpeed);
-	console.log("Defender Speed:", defenderSpeed);
-}
-*/
-
 /*
+function setUpAttack(pokemon) {
 	let highestStatGoesFirst;
 
-    if (championSpeed > enemySpeed) {
-        highestStatGoesFirst =;
-      } else if (enemySpeed > championSpeed) {
-        highestStatGoesFirst =;
-    } else {
-        const randomGoesFirst = Math.random();
-		highestStatGoesFirst = randomGoesFirst < 0.5 ? "" : "";
+	if (championBattleArray[0].speed > enemyBattleArray[0].speed) {
+		highestStatGoesFirst = championBattleArray[0];
+	} else if (enemyBattleArray[0].speed > championBattleArray[0].speed) {
+		highestStatGoesFirst = enemyBattleArray[0];
+	} else {
+		const randomGoesFirst = Math.random();
+		highestStatGoesFirst = randomGoesFirst < 0.5 ? championBattleArray[0] : enemyBattleArray[0];
 	}
-        if (highestStatGoesFirst === XX) {
-            championAttack();
-			enemyAttack();
-        } else {
-            enemyAttack();
-			championAttack();
-        }
-    }
+	if (highestStatGoesFirst === championBattleArray[0]) {
+		//championAttack();
+		//enemyAttack();
+		console.log("this triggers the champion attack");
+	} else {
+		//enemyAttack();
+		//championAttack();
+		console.log("this triggers the enemy attack");
+	}
 }
 */
-
 /*
+
 
 function attackAlert(index) {
 	const heroX = heroesArray[index];
@@ -424,26 +356,5 @@ function updateHeroesHP() {
 	}
 }
 
-function dragonAttack() {
-	let heroAlive = heroesArray.filter((hero) => hero.alive);
-
-	if (heroAlive.length > 0) {
-		let randomTarget = Math.floor(Math.random() * heroAlive.length);
-		let targetHero = heroAlive[randomTarget];
-
-		alert(`${dragonObject.name} har angrepet ${targetHero.name}!`);
-		targetHero.currentHP -= dragonObject.damage;
-		updateHeroesHP();
-
-		if (targetHero.currentHP <= 0) {
-			targetHero.alive = false;
-		}
-		if (youLost()) {
-			setTimeout(function () {
-				alert(`Spillet er tapt! ${dragonObject.name} har vunnet!`);
-			}, 500);
-		}
-	}
-}
 
 */
