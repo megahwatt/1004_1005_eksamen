@@ -162,11 +162,7 @@ function sendArraysToPocketballs(championArray, enemyArray) {
 		const pocketball = createPocketball(pokemon);
 		pocketballContainers[0].appendChild(pocketball);
 
-		console.log("Creating event listener for", pokemon.name);
-
 		pocketball.addEventListener("click", () => {
-			console.log(`Clicked on pocketball for ${pokemon.name}`);
-
 			champToBattle(index, championArray, championBattleArray, pokemon);
 
 			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
@@ -177,11 +173,7 @@ function sendArraysToPocketballs(championArray, enemyArray) {
 		const pocketball = createPocketball(pokemon);
 		pocketballContainers[1].appendChild(pocketball);
 
-		console.log("Creating event listener for", pokemon.name);
-
 		pocketball.addEventListener("click", () => {
-			console.log(`Clicked on pocketball for ${pokemon.name}`);
-
 			enemyToBattle(index, enemyArray, enemyBattleArray, pokemon);
 
 			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
@@ -204,6 +196,10 @@ function createPocketball(pokemon) {
 	txtContainer.classList.add("txt-container");
 	txtContainer.innerHTML = `${pokemon.name}<br />${pokemon.currentHP} / ${pokemon.maxHP}<br />`;
 
+	pokemon.alive = true;
+	pokemon.battling = false;
+	pokemon.inBall = true;
+
 	pocketball.append(pocketballImg, divider, txtContainer);
 	return pocketball;
 }
@@ -213,7 +209,9 @@ function champToBattle(index, championArray, championBattleArray, clickedPokemon
 	if (index >= 0 && index < championArray.length && championBattleArray.length === 0) {
 		championArray.splice(index, 1);
 		championBattleArray.push(clickedPokemon);
+
 		console.log("Champion to battle", championBattleArray);
+		clickedPokemon.champion = true;
 
 		championStats(clickedPokemon);
 	} else {
@@ -225,7 +223,9 @@ function enemyToBattle(index, enemyArray, enemyBattleArray, clickedPokemon) {
 	if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
 		enemyArray.splice(index, 1);
 		enemyBattleArray.push(clickedPokemon);
+
 		console.log("Enemy to battle", enemyBattleArray);
+		clickedPokemon.enemy = true;
 
 		enemyStats(clickedPokemon);
 	} else {
@@ -247,6 +247,10 @@ function enemyStats(clickedPokemon) {
 }
 
 function createStatDisplay(pokemon) {
+	pokemon.alive = true;
+	pokemon.battling = true;
+	pokemon.inBall = false;
+
 	const txtContainer = document.createElement("div");
 	txtContainer.classList.add("pokemon-stats");
 
@@ -262,7 +266,6 @@ function createStatDisplay(pokemon) {
     Speed: ${pokemon.speed}</p>
     <br />
     <p>Type: ${pokemon.typeOne}, ${pokemon.typeTwo || ""}</p>`;
-
 	return txtContainer;
 }
 
