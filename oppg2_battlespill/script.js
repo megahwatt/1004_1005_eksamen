@@ -110,24 +110,39 @@ getPokemonNames()
 		console.log("split champ", championArray);
 		console.log("split enemy", enemyArray);
 
-		sendArraysToPocketballs(championArray, enemyArray, championBattleArray, enemyBattleArray);
+		sendChampionToPocketballs(championArray, championBattleArray);
+		sendEnemyToPocketballs(enemyArray, enemyBattleArray);
 	})
 	.catch((error) => {
 		console.error("404 getPokemonNames .then-block:", error.message);
 	});
 
 // PUSH ARRAYS TO DOM, AND DISPLAY IN UI
-function sendArraysToPocketballs(championArray, enemyArray) {
+function sendChampionToPocketballs(championArray, championBattleArray) {
+	if (championBattleArray.length === 0) {
+		console.log("The field is empty. Go!");
+	} else {
+		console.log("You can only do battle with one Pokémon at a time!");
+		return;
+	}
+
 	championArray.forEach((pokemon, index) => {
 		const pocketball = createPocketball(pokemon);
 		pocketballContainers[0].appendChild(pocketball);
 
 		pocketball.addEventListener("click", () => {
 			champToBattle(pokemon, index, championArray, championBattleArray);
-
-			clickedPocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
 		});
 	});
+}
+
+function sendEnemyToPocketballs(enemyArray, enemyBattleArray) {
+	if (enemyBattleArray.length === 0) {
+		console.log("The field is empty. Go!");
+	} else {
+		console.log("You can only do battle with one Pokémon at a time!");
+		return;
+	}
 
 	enemyArray.forEach((pokemon, index) => {
 		const pocketball = createPocketball(pokemon);
@@ -135,8 +150,6 @@ function sendArraysToPocketballs(championArray, enemyArray) {
 
 		pocketball.addEventListener("click", () => {
 			enemyToBattle(pokemon, index, enemyArray, enemyBattleArray);
-
-			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
 		});
 	});
 }
@@ -148,7 +161,7 @@ function createPocketball(pokemon) {
 	const pocketballImg = document.createElement("img");
 	pocketballImg.classList.add("pocketball-img");
 	pocketballImg.src = "assets/ball_rgb_closed.png";
-	pocketballImg.setAttribute("pocketball-img-index", pokeballimgIndex);
+	//pocketballImg.setAttribute("pocketball-img-index", pokeballimgIndex);
 
 	const divider = document.createElement("div");
 	divider.classList.add("divider");
@@ -181,17 +194,17 @@ function champToBattle(clickedPokemon, index, championArray, championBattleArray
 }
 
 function enemyToBattle(clickedPokemon, index, enemyArray, enemyBattleArray) {
-	if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
-		enemyArray.splice(index, 1);
-		enemyBattleArray.push(clickedPokemon);
+	//if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
+	enemyArray.splice(index, 1);
+	enemyBattleArray.push(clickedPokemon);
 
-		console.log("Enemy to battle", enemyBattleArray);
-		clickedPokemon.enemy = true;
+	console.log("Enemy to battle", enemyBattleArray);
+	clickedPokemon.enemy = true;
 
-		enemyStats(clickedPokemon);
-	} else {
+	enemyStats(clickedPokemon);
+	/*} else {
 		console.log("You can only do battle with one pokémon at a time!");
-	}
+	}*/
 }
 
 // DISPLAY BATTLE STATS
