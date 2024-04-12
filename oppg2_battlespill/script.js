@@ -150,7 +150,7 @@ getPokemonNames()
 		const [championArray, enemyArray] = divideAndConquer(pokemonDataArray);
 		console.log("split champ", championArray);
 		console.log("split enemy", enemyArray);
-		sendArraysToPocketballs(championArray, enemyArray);
+		sendArraysToPocketballs(championArray, enemyArray, championBattleArray, enemyBattleArray);
 	})
 	.catch((error) => {
 		console.error("404 getPokemonNames .then-block:", error.message);
@@ -158,14 +158,34 @@ getPokemonNames()
 
 // PUSH ARRAYS TO DOM, AND DISPLAY IN UI
 function sendArraysToPocketballs(championArray, enemyArray) {
-	championArray.forEach((pokemon) => {
+	championArray.forEach((pokemon, index) => {
 		const pocketball = createPocketball(pokemon);
 		pocketballContainers[0].appendChild(pocketball);
+
+		console.log("Creating event listener for", pokemon.name);
+
+		pocketball.addEventListener("click", () => {
+			console.log(`Clicked on pocketball for ${pokemon.name}`);
+
+			champToBattle(index, championArray, championBattleArray, pokemon);
+
+			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
+		});
 	});
 
-	enemyArray.forEach((pokemon) => {
+	enemyArray.forEach((pokemon, index) => {
 		const pocketball = createPocketball(pokemon);
 		pocketballContainers[1].appendChild(pocketball);
+
+		console.log("Creating event listener for", pokemon.name);
+
+		pocketball.addEventListener("click", () => {
+			console.log(`Clicked on pocketball for ${pokemon.name}`);
+
+			enemyToBattle(index, enemyArray, enemyBattleArray, pokemon);
+
+			pocketball.querySelector(".pocketball-img").src = "assets/ball_rgb_open.png";
+		});
 	});
 }
 
@@ -189,37 +209,27 @@ function createPocketball(pokemon) {
 }
 
 // TO BATTLE!
-
-function createCallToBattleBtn() {
-	pocketballs.forEach((pocketball, index) => {
-		const pocketballImg = pocketball.querySelector(".pocketball-img");
-		pocketballImg.addEventListener("click", () => {
-			toBattleExclamationMark(index);
-		});
-	});
-}
-createCallToBattleBtn();
-
-function toBattleExclamationMark(index) {
-	pocketballs[index].querySelector(".pocketball-img").src = pokeballImgs[2];
-
-	const clickedPokemon = index < championArray.length ? championArray[index] : enemyArray[index - championArray.length];
-
-	if (index < championArray.length) {
+function champToBattle(index, championArray, championBattleArray, clickedPokemon) {
+	if (index >= 0 && index < championArray.length) {
 		championArray.splice(index, 1);
-	} else {
-		enemyArray.splice(index - championArray.length, 1);
-	}
-
-	if (index < championArray.length) {
 		championBattleArray.push(clickedPokemon);
+		console.log("Champion to battle", championBattleArray);
 	} else {
-		enemyBattleArray.push(clickedPokemon);
+		console.error("Invalid index or pokemon array for champion battle!");
 	}
-
-	displayPokemonStats();
 }
 
+function enemyToBattle(index, enemyArray, enemyBattleArray, clickedPokemon) {
+	if (index >= 0 && index < enemyArray.length) {
+		enemyArray.splice(index, 1);
+		enemyBattleArray.push(clickedPokemon);
+		console.log("Enemy to battle", enemyBattleArray);
+	} else {
+		console.error("Invalid index or pokemon array for enemy battle!");
+	}
+}
+
+/*
 function displayPokemonStats() {
 	txtContainer.innerHTML = "";
 
@@ -250,7 +260,7 @@ function createStatDisplay(pokemon) {
 
 	return txtContainer;
 }
-
+*/
 /*
 sprite
 id
