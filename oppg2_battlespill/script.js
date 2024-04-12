@@ -210,29 +210,30 @@ function createPocketball(pokemon) {
 
 // TO BATTLE!
 function champToBattle(index, championArray, championBattleArray, clickedPokemon) {
-	if (index >= 0 && index < championArray.length) {
+	if (index >= 0 && index < championArray.length && championBattleArray.length === 0) {
 		championArray.splice(index, 1);
 		championBattleArray.push(clickedPokemon);
 		console.log("Champion to battle", championBattleArray);
 
 		championStats(clickedPokemon);
 	} else {
-		console.error("Invalid index or pokemon array for champion battle!");
+		console.log("You can only do battle with one pokémon at a time!");
 	}
 }
 
 function enemyToBattle(index, enemyArray, enemyBattleArray, clickedPokemon) {
-	if (index >= 0 && index < enemyArray.length) {
+	if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
 		enemyArray.splice(index, 1);
 		enemyBattleArray.push(clickedPokemon);
 		console.log("Enemy to battle", enemyBattleArray);
 
 		enemyStats(clickedPokemon);
 	} else {
-		console.error("Invalid index or pokemon array for enemy battle!");
+		console.log("You can only do battle with one pokémon at a time!");
 	}
 }
 
+// DISPLAY BATTLE STATS
 function championStats(clickedPokemon) {
 	battleContainers[0].innerHTML = "";
 	const txtContainer = createStatDisplay(clickedPokemon);
