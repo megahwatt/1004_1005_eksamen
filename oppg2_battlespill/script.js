@@ -267,15 +267,62 @@ function createStatDisplay(pokemon) {
 }
 
 // EXECUTE ATTACK
-const attacker = document.querySelectorAll("txtContainer");
-
-attacker.forEach(function (attack) {
-	attack.addEventListener("click", function () {
-		executeAttack();
+document.addEventListener("DOMContentLoaded", function () {
+	const championAttacks = mainBattleContainer.querySelector(".battle-container:nth-child(1) .txt-container.champion");
+	championAttacks.addEventListener("click", function () {
+		console.log("Champion clicked"); // Log a message when the champion is clicked
+		executeAttack(championBattleArray[0], enemyBattleArray[0]);
 	});
 });
 
-function executeAttack() {}
+function executeAttack(attacker, defender) {
+	const attackerSpeed = attacker.speed;
+	const defenderSpeed = defender.speed;
+	console.log("Attacker Speed:", attackerSpeed); // Log the attacker's speed
+	console.log("Defender Speed:", defenderSpeed); // Log the defender's speed
+}
+executeAttack(attacker, defender);
+
+/* KEEP THIS VERSION
+const championAttacks = document.querySelector(".battle-container:nth-child(1) .txt-container");
+championAttacks.addEventListener("click", function () {
+	executeAttack(championBattleArray[0], enemyBattleArray[0]);
+});
+
+const enemyAttacks = document.querySelector(".battle-container:nth-child(2) .txt-container");
+enemyAttacks.addEventListener("click", function () {
+	executeAttack(enemyBattleArray[0], championBattleArray[0]);
+});
+
+function executeAttack(attacker, defender) {
+	const attackerSpeed = attacker.speed;
+	const defenderSpeed = defender.speed;
+	console.log("Attacker Speed:", attackerSpeed);
+	console.log("Defender Speed:", defenderSpeed);
+}
+*/
+
+/*
+	let highestStatGoesFirst;
+
+    if (championSpeed > enemySpeed) {
+        highestStatGoesFirst =;
+      } else if (enemySpeed > championSpeed) {
+        highestStatGoesFirst =;
+    } else {
+        const randomGoesFirst = Math.random();
+		highestStatGoesFirst = randomGoesFirst < 0.5 ? "" : "";
+	}
+        if (highestStatGoesFirst === XX) {
+            championAttack();
+			enemyAttack();
+        } else {
+            enemyAttack();
+			championAttack();
+        }
+    }
+}
+*/
 
 /*
 
@@ -299,13 +346,27 @@ function attackAlert(index) {
 	}
 }
 
-const heroX = document.querySelectorAll(".img-container");
+function dragonAttack() {
+	let heroAlive = heroesArray.filter((hero) => hero.alive);
 
-heroX.forEach(function (heroAttack, index) {
-	heroAttack.addEventListener("click", function () {
-		attackAlert(index);
-	});
-});
+	if (heroAlive.length > 0) {
+		let randomTarget = Math.floor(Math.random() * heroAlive.length);
+		let targetHero = heroAlive[randomTarget];
+
+		alert(`${dragonObject.name} har angrepet ${targetHero.name}!`);
+		targetHero.currentHP -= dragonObject.damage;
+		updateHeroesHP();
+
+		if (targetHero.currentHP <= 0) {
+			targetHero.alive = false;
+		}
+		if (youLost()) {
+			setTimeout(function () {
+				alert(`Spillet er tapt! ${dragonObject.name} har vunnet!`);
+			}, 500);
+		}
+	}
+}
 
 function youLost() {
 	return heroesArray.every((hero) => !hero.alive);
