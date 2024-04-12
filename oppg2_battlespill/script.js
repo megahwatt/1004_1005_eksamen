@@ -47,6 +47,7 @@ async function getPokemonData() {
 			const pokemonID = pokemonData.id;
 			const pokemonName = pokemonData.name;
 
+			const pokemonTypes = pokemonData.types;
 			const pokemonTypeOne = pokemonData.types[0].type.name;
 			const pokemonTypeTwo = pokemonData.types[1]?.type.name || null;
 
@@ -64,6 +65,7 @@ async function getPokemonData() {
 				attack: pokemonStatsAttack,
 				defense: pokemonStatsDefense,
 				speed: pokemonStatsSpeed,
+				types: pokemonTypes,
 				typeOne: pokemonTypeOne,
 				typeTwo: pokemonTypeTwo,
 			});
@@ -245,25 +247,6 @@ function createStatDisplay(pokemon) {
 }
 
 // EXECUTE ATTACK
-function setupAttack(pokemon) {
-	const championSpeed = parseInt(championBattleArray[0].map((pokemon) => pokemon.speed));
-	const enemySpeed = parseInt(enemyBattleArray[0].map((pokemon) => pokemon.speed));
-
-	let highestStatGoesFirst;
-
-	if (championSpeed > enemySpeed) {
-	} else if (enemySpeed > championSpeed) {
-	} else {
-		const randomGoesFirst = Math.random();
-		highestStatGoesFirst = randomGoesFirst < 0.5 ? championSpeed : enemySpeed;
-	}
-	if (highestStatGoesFirst === championSpeed) {
-		//championattack
-	} else {
-		//enemyattack
-	}
-}
-
 function championAttack(champion, enemy) {
 	const championAttack = champion.attack;
 	console.log("championAttack:", championAttack);
@@ -303,3 +286,53 @@ function updateFilters(champion, enemy) {
 		enemy.inBall = true;
 	}
 }
+
+/*function setupAttack(pokemon) {
+	const championSpeed = parseInt(championBattleArray[0].map((pokemon) => pokemon.speed));
+	const enemySpeed = parseInt(enemyBattleArray[0].map((pokemon) => pokemon.speed));
+
+	let highestStatGoesFirst;
+
+	if (championSpeed > enemySpeed) {
+	} else if (enemySpeed > championSpeed) {
+	} else {
+		const randomGoesFirst = Math.random();
+		highestStatGoesFirst = randomGoesFirst < 0.5 ? championSpeed : enemySpeed;
+	}
+	if (highestStatGoesFirst === championSpeed) {
+		//championattack
+	} else {
+		//enemyattack
+	}
+}
+
+// TYPE MATCHUP, chatGPT wrote this chart based off of the official matchup chart for gen I
+function calculateAttackEffect() {
+    const typeChart = {
+        "grass": ["water", "ground", "rock"],
+        "poison": ["grass"],
+        "normal": [],
+        "flying": ["grass", "bug"],
+        "electric": ["water"],
+        "ground": ["poison", "rock", "fire", "electric"],
+        "bug": ["grass", "psychic"],
+        "psychic": ["fighting", "poison"],
+        "rock": ["flying", "bug", "fire", "ice"],
+        "water": ["ground", "rock", "fire"],
+        "ghost": ["psychic"],
+        "dragon": ["dragon"]
+    };
+
+    let effect = 1;
+
+    XXX.forEach(XXX => {
+        if (typeChart[XXX].includes(XXX)) {
+            effect *= 2
+        } else if (typeChart[XXX].includes(XXX)) {
+            effect *= 0.5;
+        }
+    });
+
+    return effect;
+}
+*/
