@@ -8,30 +8,6 @@ let enemyArray = [];
 let championBattleArray = [];
 let enemyBattleArray = [];
 
-const pokeballImgs = ["assets/ball_bw.png", "assets/ball_rgb_closed.png", "assets/ball_rgb_open.png"];
-/*
-sprite
-id
-name
-
-currentHP
-maxHP
-
-currentXP
-targetXP
-
-attack
-defense
-speed
-
-typeI
-typeII
-
-alive
-battling
-inpocketball
-*/
-
 // GLOBAL VARIABLES
 var mainBattleContainer = document.querySelector(".main-battle-container");
 var battleContainers = mainBattleContainer.querySelectorAll(".battle-container");
@@ -42,6 +18,8 @@ var pocketballContainers = mainPocketballContainer.querySelectorAll(".pocketball
 var pocketballs = document.querySelectorAll(".pocketball");
 
 var txtContainer = document.querySelectorAll(".txt-container");
+
+const pokeballImgs = ["assets/ball_bw.png", "assets/ball_rgb_closed.png", "assets/ball_rgb_open.png"];
 
 // FETCH DATA FROM API AND MANIPULATE DATA TO START
 const urlGenI = `https://pokeapi.co/api/v2/generation/1`;
@@ -67,6 +45,7 @@ async function getPokemonData() {
 			const pokemonID = pokemonData.id;
 			const pokemonName = pokemonData.name;
 
+			const pokemonTypes = pokemonData.types;
 			const pokemonTypeOne = pokemonData.types[0].type.name;
 			const pokemonTypeTwo = pokemonData.types[1]?.type.name || null;
 
@@ -84,6 +63,7 @@ async function getPokemonData() {
 				attack: pokemonStatsAttack,
 				defense: pokemonStatsDefense,
 				speed: pokemonStatsSpeed,
+				types: pokemonTypes,
 				typeOne: pokemonTypeOne,
 				typeTwo: pokemonTypeTwo,
 			});
@@ -264,6 +244,38 @@ function createStatDisplay(pokemon) {
 
 	return txtContainer;
 }
+
+/*
+// TYPE MATCHUP, chatGPT wrote this chart based off of the official matchup chart for gen I
+function calculateAttackEffect() {
+    const typeChart = {
+        "grass": ["water", "ground", "rock"],
+        "poison": ["grass"],
+        "normal": [],
+        "flying": ["grass", "bug"],
+        "electric": ["water"],
+        "ground": ["poison", "rock", "fire", "electric"],
+        "bug": ["grass", "psychic"],
+        "psychic": ["fighting", "poison"],
+        "rock": ["flying", "bug", "fire", "ice"],
+        "water": ["ground", "rock", "fire"],
+        "ghost": ["psychic"],
+        "dragon": ["dragon"]
+    };
+
+    let effect = 1;
+
+    XXX.forEach(XXX => {
+        if (typeChart[XXX].includes(XXX)) {
+            effect *= 2
+        } else if (typeChart[XXX].includes(XXX)) {
+            effect *= 0.5;
+        }
+    });
+
+    return effect;
+}
+*/
 
 /*
 sprite
