@@ -266,64 +266,39 @@ function createStatDisplay(pokemon) {
 	return txtContainer;
 }
 
-/*
-sprite
-id
-name
+// EXECUTE ATTACK
+const attacker = document.querySelectorAll("txtContainer");
 
-currentHP
-maxHP
+attacker.forEach(function (attack) {
+	attack.addEventListener("click", function () {
+		executeAttack();
+	});
+});
 
-currentXP
-targetXP
-
-attack
-defense
-speed
-
-typeI
-typeII
-
-alive
-battling
-inpocketball
-*/
+function executeAttack() {}
 
 /*
-let championArray = [
-	{
-		id: 0,
-		name: "XX",
-		hp: 0,
-		currenthp: 0,
-		xp: 0,
-		targetxp: 0,
-		attack: 0,
-		defense: 0,
-		speed: 0,
-		alive: true,
-		battling: false,
-		inpockeball: true,
-	},
-];
 
-let enemyArray = [
-	{
-		id: 0,
-		name: "XX",
-		hp: 0,
-		currenthp: 0,
-		xp: 0,
-		targetxp: 0,
-		attack: 0,
-		defense: 0,
-		alive: true,
-		battling: false,
-		inpockeball: true,
-	},
-];
-*/
-/*
+function attackAlert(index) {
+	const heroX = heroesArray[index];
+	if (heroX && heroX.alive) {
+		if (index === 0) {
+			
+			dragonObject.currentHP -= heroesArray[0].damage;
+			
+		} else if (index === 1) {
+			
+			dragonObject.currentHP -= heroesArray[1].damage;
+			
+		} else if (index === 2) {
+			
+			dragonObject.currentHP -= heroesArray[2].damage;
+			
+		}
+		
+	}
+}
+
 const heroX = document.querySelectorAll(".img-container");
 
 heroX.forEach(function (heroAttack, index) {
@@ -407,23 +382,4 @@ function dragonAttack() {
 	}
 }
 
-function attackAlert(index) {
-	const heroX = heroesArray[index];
-	if (heroX && heroX.alive) {
-		if (index === 0) {
-			alert(`${heroesArray[0].name} har gjort ${heroesArray[0].damage} skade på ${dragonObject.name}`);
-			dragonObject.currentHP -= heroesArray[0].damage;
-			updateDragonHP();
-		} else if (index === 1) {
-			alert(`${heroesArray[1].name} har gjort ${heroesArray[1].damage} skade på ${dragonObject.name}`);
-			dragonObject.currentHP -= heroesArray[1].damage;
-			updateDragonHP();
-		} else if (index === 2) {
-			alert(`${heroesArray[2].name} har gjort ${heroesArray[2].damage} skade på ${dragonObject.name}`);
-			dragonObject.currentHP -= heroesArray[2].damage;
-			updateDragonHP();
-		}
-		dragonAttack();
-	}
-}
 */
