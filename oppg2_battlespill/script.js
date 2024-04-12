@@ -145,23 +145,24 @@ function sendEnemyToPocketballs(enemyArray, enemyBattleArray) {
 	}
 
 	enemyArray.forEach((pokemon, index) => {
-		const pocketball = createPocketball(pokemon);
+		const pocketball = createPocketball(pokemon, index);
 		pocketballContainers[1].appendChild(pocketball);
+		const pocketballIndex = index;
 
 		pocketball.addEventListener("click", () => {
-			enemyToBattle(pokemon, index, enemyArray, enemyBattleArray);
+			enemyToBattle(pokemon, pocketballIndex, enemyArray, enemyBattleArray);
 		});
 	});
 }
 
-function createPocketball(pokemon) {
+function createPocketball(pokemon, index) {
 	const pocketball = document.createElement("div");
 	pocketball.classList.add("pocketball");
+	pocketball.dataset.index = index;
 
 	const pocketballImg = document.createElement("img");
 	pocketballImg.classList.add("pocketball-img");
 	pocketballImg.src = "assets/ball_rgb_closed.png";
-	//pocketballImg.setAttribute("pocketball-img-index", pokeballimgIndex);
 
 	const divider = document.createElement("div");
 	divider.classList.add("divider");
@@ -194,7 +195,6 @@ function champToBattle(clickedPokemon, index, championArray, championBattleArray
 }
 
 function enemyToBattle(clickedPokemon, index, enemyArray, enemyBattleArray) {
-	//if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
 	enemyArray.splice(index, 1);
 	enemyBattleArray.push(clickedPokemon);
 
@@ -202,9 +202,6 @@ function enemyToBattle(clickedPokemon, index, enemyArray, enemyBattleArray) {
 	clickedPokemon.enemy = true;
 
 	enemyStats(clickedPokemon);
-	/*} else {
-		console.log("You can only do battle with one pokémon at a time!");
-	}*/
 }
 
 // DISPLAY BATTLE STATS
