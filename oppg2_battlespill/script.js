@@ -226,6 +226,8 @@ function enemyToBattle(index, enemyArray, enemyBattleArray, clickedPokemon) {
 		enemyArray.splice(index, 1);
 		enemyBattleArray.push(clickedPokemon);
 		console.log("Enemy to battle", enemyBattleArray);
+
+		enemyStats(clickedPokemon);
 	} else {
 		console.error("Invalid index or pokemon array for enemy battle!");
 	}
@@ -237,12 +239,21 @@ function championStats(clickedPokemon) {
 	battleContainers[0].appendChild(txtContainer);
 }
 
+function enemyStats(clickedPokemon) {
+	battleContainers[1].innerHTML = "";
+	const txtContainer = createStatDisplay(clickedPokemon);
+	battleContainers[1].appendChild(txtContainer);
+}
+
 function createStatDisplay(pokemon) {
 	const txtContainer = document.createElement("div");
 	txtContainer.classList.add("pokemon-stats");
 
-	txtContainer.innerHTML = `<p><img src="${pokemon.sprite}" alt="The official artwork of ${pokemon.name}"><br />
-    #${pokemon.id} ${pokemon.name}<br />
+	txtContainer.innerHTML = `<p><img src="${pokemon.sprite}" class="sprite-to-display" alt="The official artwork of ${
+		pokemon.name
+	}" />
+	<br />
+	#${pokemon.id} ${pokemon.name}<br />
     ${pokemon.currentHP} / ${pokemon.maxHP}</p>
     <br />
     <p>Attack: ${pokemon.attack}<br />
@@ -254,38 +265,6 @@ function createStatDisplay(pokemon) {
 	return txtContainer;
 }
 
-/*
-function displayPokemonStats() {
-	txtContainer.innerHTML = "";
-
-	championBattleArray.forEach((pokemon) => {
-		const txtContainer = createStatDisplay(pokemon);
-		battleContainers[0].appendChild(txtContainer);
-	});
-
-	enemyBattleArray.forEach((pokemon) => {
-		const txtContainer = createStatDisplay(pokemon);
-		battleContainers[1].appendChild(txtContainer);
-	});
-}
-
-function createStatDisplay(pokemon) {
-	const txtContainer = document.createElement("div");
-	txtContainer.classList.add("pokemon-stats");
-
-	txtContainer.innerHTML = `<p><img src="${pokemon.sprite}" alt="The official artwork of ${pokemon.name}"><br />
-    #${pokemon.id} ${pokemon.name}<br />
-    ${pokemon.currentHP} / ${pokemon.maxHP}</p>
-    <br />
-    <p>Attack: ${pokemon.attack}<br />
-    Defense: ${pokemon.defense}<br />
-    Speed: ${pokemon.speed}</p>
-    <br />
-    <p>Type: ${pokemon.typeOne}, ${pokemon.typeTwo || ""}</p>`;
-
-	return txtContainer;
-}
-*/
 /*
 sprite
 id
