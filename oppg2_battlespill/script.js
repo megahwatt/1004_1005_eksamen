@@ -214,6 +214,8 @@ function champToBattle(index, championArray, championBattleArray, clickedPokemon
 		championArray.splice(index, 1);
 		championBattleArray.push(clickedPokemon);
 		console.log("Champion to battle", championBattleArray);
+
+		championStats(clickedPokemon);
 	} else {
 		console.error("Invalid index or pokemon array for champion battle!");
 	}
@@ -227,6 +229,29 @@ function enemyToBattle(index, enemyArray, enemyBattleArray, clickedPokemon) {
 	} else {
 		console.error("Invalid index or pokemon array for enemy battle!");
 	}
+}
+
+function championStats(clickedPokemon) {
+	battleContainers[0].innerHTML = "";
+	const txtContainer = createStatDisplay(clickedPokemon);
+	battleContainers[0].appendChild(txtContainer);
+}
+
+function createStatDisplay(pokemon) {
+	const txtContainer = document.createElement("div");
+	txtContainer.classList.add("pokemon-stats");
+
+	txtContainer.innerHTML = `<p><img src="${pokemon.sprite}" alt="The official artwork of ${pokemon.name}"><br />
+    #${pokemon.id} ${pokemon.name}<br />
+    ${pokemon.currentHP} / ${pokemon.maxHP}</p>
+    <br />
+    <p>Attack: ${pokemon.attack}<br />
+    Defense: ${pokemon.defense}<br />
+    Speed: ${pokemon.speed}</p>
+    <br />
+    <p>Type: ${pokemon.typeOne}, ${pokemon.typeTwo || ""}</p>`;
+
+	return txtContainer;
 }
 
 /*
