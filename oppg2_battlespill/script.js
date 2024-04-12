@@ -119,13 +119,6 @@ getPokemonNames()
 
 // PUSH ARRAYS TO DOM, AND DISPLAY IN UI
 function sendChampionToPocketballs(championArray, championBattleArray) {
-	if (championBattleArray.length === 0) {
-		console.log("The field is empty. Go!");
-	} else {
-		console.log("You can only do battle with one Pokémon at a time!");
-		return;
-	}
-
 	championArray.forEach((pokemon, index) => {
 		const pocketball = createPocketball(pokemon);
 		pocketballContainers[0].appendChild(pocketball);
@@ -137,13 +130,6 @@ function sendChampionToPocketballs(championArray, championBattleArray) {
 }
 
 function sendEnemyToPocketballs(enemyArray, enemyBattleArray) {
-	if (enemyBattleArray.length === 0) {
-		console.log("The field is empty. Go!");
-	} else {
-		console.log("You can only do battle with one Pokémon at a time!");
-		return;
-	}
-
 	enemyArray.forEach((pokemon, index) => {
 		const pocketball = createPocketball(pokemon, index);
 		pocketballContainers[1].appendChild(pocketball);
@@ -189,19 +175,31 @@ function champToBattle(clickedPokemon, index, championArray, championBattleArray
 		clickedPokemon.champion = true;
 
 		championStats(clickedPokemon);
+
+		const pocketball = document.querySelector(`.pocketball[data-index="${index}"]`);
+		const pocketballImg = pocketball.querySelector(".pocketball-img");
+		pocketballImg.src = "assets/ball_rgb_open.png";
 	} else if (championBattleArray.length > 0) {
 		console.log("You can only do battle with one pokémon at a time!");
 	}
 }
 
 function enemyToBattle(clickedPokemon, index, enemyArray, enemyBattleArray) {
-	enemyArray.splice(index, 1);
-	enemyBattleArray.push(clickedPokemon);
+	if (index >= 0 && index < enemyArray.length && enemyBattleArray.length === 0) {
+		enemyArray.splice(index, 1);
+		enemyBattleArray.push(clickedPokemon);
 
-	console.log("Enemy to battle", enemyBattleArray);
-	clickedPokemon.enemy = true;
+		console.log("Enemy to battle", enemyBattleArray);
+		clickedPokemon.enemy = true;
 
-	enemyStats(clickedPokemon);
+		enemyStats(clickedPokemon);
+
+		const pocketball = document.querySelector(`.pocketball[data-index="${index}"]`);
+		const pocketballImg = pocketball.querySelector(".pocketball-img");
+		pocketballImg.src = "assets/ball_rgb_open.png";
+	} else if (enemyBattleArray.length > 0) {
+		console.log("You can only do battle with one pokémon at a time!");
+	}
 }
 
 // DISPLAY BATTLE STATS
